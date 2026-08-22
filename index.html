@@ -6915,18 +6915,25 @@ if (user && !user.isAnonymous) {
         // Update KONTO section to show user email and logout button
         const kontoSection = document.querySelector('[style*="background:#1e293b"]');
         if (kontoSection && kontoSection.textContent.includes('Melde dich an')) {
-          kontoSection.innerHTML = `
+         // Don't override if already logged in
+if (kontoSection.getAttribute('data-user-logged-in') === 'true') {
+    console.log('Already showing logged-in state, skipping...');
+    return;
+}
+
+kontoSection.setAttribute('data-user-logged-in', 'true');
+kontoSection.innerHTML = `
             <div class="rounded-2xl p-4 space-y-2" style="background:#1e293b">
-              <p class="text-[10px] font-black uppercase tracking-wider od-muted">Konto</p>
+              <p class="text-[10px] font-black uppercase tracking-wider od-muted">✅ KONTO</p>
               <p class="text-[11px] font-bold od-dim leading-relaxed">
                 📧 <strong>${user.email}</strong>
               </p>
-            <button onclick="window.location.href='login.html'" class="btn3d w-full py-3 rounded-xl text-xs font-black bg-red-600 hover:bg-red-700 text-white">
+              <p class="text-[10px] text-green-400 font-bold">✅ Logged In Successfully</p>
+              <button onclick="sbLogout()" class="btn3d w-full py-3 rounded-xl text-xs font-black bg-red-600 hover:bg-red-700 text-white">
+                Logout
               </button>
             </div>
           `;
-        }
-        
         // Remove trial modal if it exists
         const modal = document.querySelector('[data-trial-modal]');
         if (modal) modal.remove();
