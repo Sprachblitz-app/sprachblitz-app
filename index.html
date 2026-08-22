@@ -90,18 +90,30 @@
             alert('Please enter email and password');
             return;
         }
-          
-    // Logout function
-    window.sbLogout = async function() {
-        try {
-            const { signOut } = await import('./sb-auth.js');
-            await signOut(auth);
-            console.log('✅ Logged out');
-            location.reload();
-        } catch(error) {
-            alert('❌ Logout error: ' + error.message);
-        }
+    
+// ===== LOGOUT FUNCTION =====
+window.sbLogout = async function() {
+    try {
+        console.log('🚪 Logging out...');
+        
+        // Import signOut from sb-auth
+        const { signOut } = await import('./sb-auth.js');
+        
+        // Logout
+        await signOut(auth);
+        
+        console.log('✅ Logged out');
+        
+        // Clear user
+        window.currentUser = null;
+        
+        // Reload page
+        window.location.href = './index.html';
+    } catch(error) {
+        console.error('❌ Logout error:', error);
+        alert('Logout error: ' + error.message);
     }
+}
         
         try {
             const result = await createUserWithEmailAndPassword(auth, email, password);
