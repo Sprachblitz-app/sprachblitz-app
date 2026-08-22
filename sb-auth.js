@@ -60,7 +60,9 @@ let authInitialized = false;
 onAuthStateChanged(auth, (user) => {
     authInitialized = true;
     console.log('[Firebase] Auth ready. User:', user ? user.email : 'Anonymous');
-    
+    // SET GLOBAL CURRENT USER - THIS IS CRITICAL!
+    window.currentUser = user;
+    console.log('✅ window.currentUser set to:', user ? user.email : 'null');
     if (user) {
         console.log('✅ USER LOGGED IN:', user.email);
         updateLoginDisplay(user);
