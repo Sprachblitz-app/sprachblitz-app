@@ -6876,7 +6876,7 @@ if (user && !user.isAnonymous) {
 }
         document.body.appendChild(modal);
 
-        document.getElementById('trialSignupBtn').addEventListener('click', function() {
+               document.getElementById('trialSignupBtn').addEventListener('click', function() {
           window.location.href = 'login.html';
         });
       }
@@ -6898,5 +6898,13 @@ if (user && !user.isAnonymous) {
     });
   });
   
+// ===== LOGOUT FUNCTION =====
+window.sbLogout = function() {
+    console.log('🚪 Logging out...');
+    window.currentUser = null;
+    setTimeout(() => {
+        location.reload();
+    }, 300);
+}
      </script>
 </html>
