@@ -6844,22 +6844,21 @@ async function sbLogout() {
         banner.style.background = 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)';
       }
     }
-        // Update KONTO section to show user email and logout button
-        console.log('✅ User logged in! Updating KONTO display...');
+      // Update KONTO section to show user email and logout button
+if (user && !user.isAnonymous) {
+    console.log('✅ User logged in, updating KONTO...');
+    
+    const kontoElement = document.querySelector('[style*="background:#1e293b"]');
+    
+    if (kontoElement) {
+        console.log('✅ Found KONTO, showing logged-in state');
         
-        // Try multiple selectors to find KONTO section
-        let kontoElement = document.querySelector('[data-konto]') 
-          || document.querySelector('.konto-section')
-          || Array.from(document.querySelectorAll('div')).find(el => 
-              el.textContent.includes('Melde dich an') && 
-              el.querySelector('button')
-            );
+        // Set data attribute to prevent re-rendering
+        kontoElement.setAttribute('data-user-logged-in', 'true');
         
-        if (kontoElement) {
-          console.log('✅ Found KONTO element, updating display...');
-          kontoElement.innerHTML = `
+        kontoElement.innerHTML = `
             <div class="rounded-2xl p-4 space-y-2" style="background:#1e293b">
-              <p class="text-[10px] font-black uppercase tracking-wider od-muted">✅ Konto</p>
+              <p class="text-[10px] font-black uppercase tracking-wider od-muted">✅ KONTO</p>
               <p class="text-[11px] font-bold od-dim leading-relaxed">
                 📧 <strong>${user.email}</strong>
               </p>
@@ -6869,6 +6868,8 @@ async function sbLogout() {
               </button>
             </div>
           `;
+    }
+}
         } else {
           console.warn('⚠️ KONTO element not found, will retry...');
           setTimeout(() => {
