@@ -5,12 +5,13 @@ import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs } 
 
 // ===== FIREBASE CONFIG =====
 const firebaseConfig = {
-  apiKey: "AIzaSyAVkPB4-OhcVN5nJ8qR2mX9pL1zY3vW5aB",
-  authDomain: "sprachblitz-app.firebaseapp.com",
-  projectId: "sprachblitz-app",
-  storageBucket: "sprachblitz-app.appspot.com",
-  messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:abc123def456"
+  apiKey: "AIzaSyBkPYfPGWXkbu-x2opF3TVrt3ADXZYimak",
+  authDomain: "sprachblitz.firebaseapp.com",
+  projectId: "sprachblitz",
+  storageBucket: "sprachblitz.firebasestorage.app",
+  messagingSenderId: "1088979468853",
+  appId: "1:1088979468853:web:ead7d1a35062caf074277c",
+  measurementId: "G-HKD2Y8X0P2"
 };
 
 const app = initializeApp(firebaseConfig);
