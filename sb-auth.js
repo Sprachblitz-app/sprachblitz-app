@@ -133,3 +133,16 @@ export {
 export function sbAuthReady() {
     return authInitialized;
 }
+
+// ===== LOGOUT FUNCTION =====
+export async function sbLogout() {
+    try {
+        console.log('🚪 Logging out...');
+        await signOut(auth);
+        console.log('✅ Logged out successfully');
+        window.location.href = './index.html';
+    } catch (error) {
+        console.error('❌ Logout error:', error);
+        alert('Logout error: ' + error.message);
+    }
+}
