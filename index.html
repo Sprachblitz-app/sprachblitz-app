@@ -4522,21 +4522,34 @@
             </div>
           </div>`;
       }
+// Check if user is logged in
+if (window.currentUser && !window.currentUser.isAnonymous) {
+  return `
+    <div class="rounded-2xl p-4 space-y-2" style="background:#1e293b">
+      <p class="text-[10px] font-black uppercase tracking-wider od-muted">✅ KONTO</p>
+      <p class="text-[11px] font-bold od-dim leading-relaxed">
+        📧 <strong>${window.currentUser.email}</strong>
+      </p>
+      <p class="text-[10px] text-green-400 font-bold">✅ Logged In Successfully</p>
+      <button onclick="sbLogout()" class="btn3d w-full py-3 rounded-xl text-xs font-black bg-red-600 hover:bg-red-700 text-white">
+        Logout
+      </button>
+    </div>
+  `;
+}
 
-      return `
+// Show login form if NOT logged in
+return `
         <div class="rounded-2xl p-4 space-y-2" style="background:#1e293b">
           <p class="text-[10px] font-black uppercase tracking-wider od-muted">Konto</p>
           <p class="text-[11px] font-bold od-dim leading-relaxed">
-            Melde dich an, damit dein Fortschritt auf allen Ger\u00e4ten gleich ist.</p>
-
+            Melde dich an, damit dein Fortschritt auf allen Geräten gleich ist.</p>
           <button onclick="sbSignInGoogle()" class="btn3d w-full py-3 rounded-xl text-xs font-black" style="background:#ffffff;color:#1f2937">Weiter mit Google</button>
-
           <div class="flex items-center gap-2 py-1">
             <span style="flex:1;height:1px;background:#334155"></span>
             <span class="text-[10px] font-bold od-dim">oder mit E-Mail</span>
             <span style="flex:1;height:1px;background:#334155"></span>
           </div>
-
           ${authMode === 'signup' ? `
             <input value="${authName.replace(/"/g, '&quot;')}" oninput="setAuthField('name', this.value)" placeholder="Dein Name"
                    class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-white outline-none">` : ''}
@@ -4546,10 +4559,8 @@
           <input type="password" autocomplete="${authMode === 'signup' ? 'new-password' : 'current-password'}"
                  oninput="setAuthField('pass', this.value)" placeholder="Passwort"
                  class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-white outline-none">
-
           <button onclick="submitAuthForm()" class="btn3d w-full py-3 rounded-xl text-xs font-black text-white" style="background:#4f46e5">
             ${authMode === 'signup' ? 'Konto erstellen' : 'Anmelden'}</button>
-
           <div class="flex justify-between items-center pt-1">
             <button onclick="setAuthMode('${authMode === 'signup' ? 'signin' : 'signup'}')" class="text-[10px] font-black od-muted">
               ${authMode === 'signup' ? 'Ich habe schon ein Konto' : 'Neues Konto erstellen'}</button>
@@ -4557,12 +4568,14 @@
           </div>
         
           ${authMsg ? `<p class="text-[11px] font-bold od-amber pt-1">${authMsg}</p>` : ''}
-        </div>`;
-  
+        </div>
+      `;
+}
+
 async function sbLogout() {
   const { signOut } = await import('./sb-auth.js');
   signOut(auth).then(() => {
-    window.location.href = './login.html';
+    window.location.href = './index.html';
   });
 }
     }
