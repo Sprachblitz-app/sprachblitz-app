@@ -78,32 +78,38 @@ onAuthStateChanged(auth, (user) => {
 function updateLoginDisplay(user) {
     console.log('🔄 Updating login display for:', user.email);
     
-    // Find KONTO section - try ALL possible selectors
+    // Find KONTO section
     let kontoElement = document.querySelector('[style*="background:#1e293b"]')
       || document.querySelector('[data-konto]')
-      || document.querySelector('.konto-section')
       || Array.from(document.querySelectorAll('div')).find(el => 
-          el.textContent.includes('Melde dich') || 
-          el.textContent.includes('KONTO')
+          (el.textContent.includes('Melde dich') || el.textContent.includes('KONTO')) && 
+          el.querySelector('button')
         );
     
     if (kontoElement) {
-        console.log('✅ Found KONTO element');
+        console.log('✅ Found KONTO element, updating...');
+        
+        // Mark as logged in
+        kontoElement.setAttribute('data-logged-in', 'true');
+        
         kontoElement.innerHTML = `
             <div class="rounded-2xl p-4 space-y-2" style="background:#1e293b">
-              <p class="text-[10px] font-black uppercase tracking-wider od-muted">✅ Konto</p>
+              <p class="text-[10px] font-black uppercase tracking-wider od-muted">✅ KONTO</p>
               <p class="text-[11px] font-bold od-dim leading-relaxed">
                 📧 <strong>${user.email}</strong>
               </p>
-              <p class="text-[10px] text-green-400 font-bold">✅ Logged In Successfully</p>
+              <p class="text-[10px] text-green-400 font-bold">✅ Logged in Successfully</p>
               <button onclick="sbLogout()" class="btn3d w-full py-3 rounded-xl text-xs font-black bg-red-600 hover:bg-red-700 text-white">
                 Logout
               </button>
             </div>
           `;
+        
+        console.log('✅ KONTO display updated permanently');
+    } else {
+        console.warn('⚠️ KONTO element not found');
     }
 }
-
 // ===== EXPORTS =====
 export { 
   auth, 
