@@ -4570,8 +4570,6 @@ return `
           ${authMsg ? `<p class="text-[11px] font-bold od-amber pt-1">${authMsg}</p>` : ''}
         </div>
       `;
-}
-
 async function sbLogout() {
   const { signOut } = await import('./sb-auth.js');
   signOut(auth).then(() => {
@@ -6883,27 +6881,6 @@ if (user && !user.isAnonymous) {
           `;
     }
 }
-        } else {
-          console.warn('⚠️ KONTO element not found, will retry...');
-          setTimeout(() => {
-            const kb = document.querySelector('[data-konto]');
-            if (kb) {
-              kb.innerHTML = `
-                <div class="rounded-2xl p-4 space-y-2" style="background:#1e293b">
-                  <p class="text-[10px] font-black uppercase tracking-wider od-muted">✅ Konto</p>
-                  <p class="text-[11px] font-bold od-dim leading-relaxed">
-                    📧 <strong>${user.email}</strong>
-                  </p>
-                  <p class="text-[10px] text-green-400 font-bold">✅ Logged In Successfully</p>
-                  <button onclick="sbLogout()" class="btn3d w-full py-3 rounded-xl text-xs font-black bg-red-600 hover:bg-red-700 text-white">
-                    Logout
-                  </button>
-                </div>
-              `;
-            }
-          }, 500);
-        }
-        `;
         document.body.appendChild(modal);
 
         document.getElementById('trialSignupBtn').addEventListener('click', function() {
