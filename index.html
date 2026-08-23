@@ -48,10 +48,43 @@
   <link rel="apple-touch-icon" href="./apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
   <title>Sprachblitz – Deutsch lernen A1 bis B2</title>
+  <script>
+    // Logout wrapper defined here, will be overridden by module import below
+    window.sbLogout = async function() {
+        console.log('🚪 Logging out... (wrapper)');
+        // This will be replaced by proper Firebase logout from sb-auth.js
+        localStorage.clear();
+        window.currentUser = null;
+        setTimeout(() => { location.href = './index.html'; }, 300);
+    };
+  </script>
+
   <script type="module">
-    import { auth, sbAuthReady, signInAnonymously, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from './sb-auth.js';
+    import { auth, sbAuthReady, signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, sendPasswordResetEmail } from './sb-auth.js';
+    
+    // Make auth available globally for logout function
+    window.auth = auth;
     
     window.sbAuthReady = sbAuthReady;
+    
+    // Proper logout function using Firebase
+    window.sbLogout = async function() {
+        try {
+            console.log('🚪 Logging out...');
+            await signOut(auth);
+            console.log('✅ Logged out successfully');
+            // Clear local data
+            window.currentUser = null;
+            localStorage.removeItem('sb_trial_start');
+            localStorage.removeItem('sb_streak_count');
+            localStorage.removeItem('sb_xp');
+            // Redirect
+            setTimeout(() => { location.href = './index.html'; }, 300);
+        } catch (error) {
+            console.error('❌ Logout error:', error);
+            alert('Logout error: ' + error.message);
+        }
+    };
     
     // Anonymous login
     window.sbSignInAnonymously = async function() {
@@ -90,17 +123,47 @@
             alert('Please enter email and password');
             return;
         }
-   // ===== LOGOUT FUNCTION =====
-window.sbLogout = function() {
-    console.log('🚪 Logging out...');
-    window.currentUser = null;
-    location.reload();
-}
+        
         try {
             const result = await createUserWithEmailAndPassword(auth, email, password);
             console.log('✅ Account created:', result.user.email);
             setTimeout(() => location.reload(), 500);
         } catch(error) {
+            console.error('Signup error:', error);
+            alert('❌ Error: ' + error.message);
+        }
+    }
+    
+    // Email/Password login
+    window.sbSignInEmail = async function(email, password) {
+        if (!email || !password) {
+            alert('Please enter email and password');
+            return;
+        }
+        
+        try {
+            const result = await signInWithEmailAndPassword(auth, email, password);
+            console.log('✅ Logged in with email:', result.user.email);
+            setTimeout(() => location.reload(), 500);
+        } catch(error) {
+            console.error('Login error:', error);
+            alert('❌ Error: ' + error.message);
+        }
+    }
+    
+    // Password reset function
+    window.sbResetPassword = async function(email) {
+        if (!email) {
+            alert('Please enter your email address first');
+            return;
+        }
+        
+        try {
+            await sendPasswordResetEmail(auth, email);
+            alert('✅ Password reset email sent! Check your inbox.');
+            console.log('✅ Password reset email sent to:', email);
+        } catch(error) {
+            console.error('Password reset error:', error);
             alert('❌ Error: ' + error.message);
         }
     }
@@ -4455,7 +4518,7 @@ window.sbLogout = function() {
     }
     function submitAuthForm() {
       authMsg = '';
-      if (authMode === 'signup') sbSignUpEmail(authEmail, authPass, authName || learnerName);
+      if (authMode === 'signup') sbCreateAccount();
       else sbSignInEmail(authEmail, authPass);
     }
 
@@ -4563,12 +4626,7 @@ return `
           ${authMsg ? `<p class="text-[11px] font-bold od-amber pt-1">${authMsg}</p>` : ''}
         </div>
       `;
-async function sbLogout() {
-  const { signOut } = await import('./sb-auth.js');
-  signOut(auth).then(() => {
-    window.location.href = './index.html';
-  });
-}
+// Logout defined globally after Firebase imports
     }
 
     // The settings sheet is rendered on top of whatever tab is open.
@@ -6762,25 +6820,6 @@ async function sbLogout() {
     const TRIAL_DURATION = 10 * 60 * 1000;
     let alertShown = false;
     let isExpired = false;
-    
-    // Block app when trial expires
-    function blockApp() {
-      console.log('[trial] Blocking app - trial expired');
-      const mainContent = document.querySelector('main') || document.querySelector('[role="main"]') || document.body;
-      const buttons = mainContent.querySelectorAll('button');
-      const inputs = mainContent.querySelectorAll('input, textarea, select');
-      
-      buttons.forEach(btn => {
-        btn.disabled = true;
-        btn.style.opacity = '0.5';
-        btn.style.cursor = 'not-allowed';
-      });
-      
-      inputs.forEach(inp => {
-        inp.disabled = true;
-        inp.style.opacity = '0.5';
-      });
-    }
 
     function startTrialTimer() {
       const key = 'sb_trial_start';
@@ -6917,12 +6956,7 @@ if (user && !user.isAnonymous) {
   });
   
 // ===== LOGOUT FUNCTION =====
-window.sbLogout = function() {
-    console.log('🚪 Logging out...');
-    window.currentUser = null;
-    setTimeout(() => {
-        location.reload();
-    }, 300);
-}
-     </script>
+// Logout function defined at top of file with synchronous onclick support
+    </script>
+</body>
 </html>
