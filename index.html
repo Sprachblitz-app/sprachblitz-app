@@ -49,43 +49,42 @@
   <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
   <title>Sprachblitz – Deutsch lernen A1 bis B2</title>
   <script>
-    // Synchronous logout wrapper for onclick handlers
-    window.sbLogout = function() {
-        console.log('🚪 Logging out...');
-        
-        // Try to use Firebase signOut if available
-        if (window.auth && typeof window.auth.signOut === 'function') {
-            window.auth.signOut().then(() => {
-                console.log('✅ Firebase logout complete');
-                // Clear local data
-                window.currentUser = null;
-                localStorage.removeItem('sb_trial_start');
-                localStorage.removeItem('sb_streak_count');
-                localStorage.removeItem('sb_xp');
-                // Redirect
-                setTimeout(() => { location.href = './index.html'; }, 300);
-            }).catch(err => {
-                console.error('Firebase logout error:', err);
-                // Fallback: just reload
-                setTimeout(() => { location.href = './index.html'; }, 300);
-            });
-        } else {
-            // Fallback if Firebase not ready
-            console.warn('Firebase auth not available, using fallback logout');
-            window.currentUser = null;
-            localStorage.clear();
-            setTimeout(() => { location.href = './index.html'; }, 300);
-        }
+    // Logout wrapper defined here, will be overridden by module import below
+    window.sbLogout = async function() {
+        console.log('🚪 Logging out... (wrapper)');
+        // This will be replaced by proper Firebase logout from sb-auth.js
+        localStorage.clear();
+        window.currentUser = null;
+        setTimeout(() => { location.href = './index.html'; }, 300);
     };
   </script>
 
   <script type="module">
-    import { auth, sbAuthReady, signInAnonymously, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from './sb-auth.js';
+    import { auth, sbAuthReady, signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from './sb-auth.js';
     
     // Make auth available globally for logout function
     window.auth = auth;
     
     window.sbAuthReady = sbAuthReady;
+    
+    // Proper logout function using Firebase
+    window.sbLogout = async function() {
+        try {
+            console.log('🚪 Logging out...');
+            await signOut(auth);
+            console.log('✅ Logged out successfully');
+            // Clear local data
+            window.currentUser = null;
+            localStorage.removeItem('sb_trial_start');
+            localStorage.removeItem('sb_streak_count');
+            localStorage.removeItem('sb_xp');
+            // Redirect
+            setTimeout(() => { location.href = './index.html'; }, 300);
+        } catch (error) {
+            console.error('❌ Logout error:', error);
+            alert('Logout error: ' + error.message);
+        }
+    };
     
     // Anonymous login
     window.sbSignInAnonymously = async function() {
@@ -124,13 +123,30 @@
             alert('Please enter email and password');
             return;
         }
-   // ===== LOGOUT FUNCTION =====
-// Logout is defined after Firebase imports below
+        
         try {
             const result = await createUserWithEmailAndPassword(auth, email, password);
             console.log('✅ Account created:', result.user.email);
             setTimeout(() => location.reload(), 500);
         } catch(error) {
+            console.error('Signup error:', error);
+            alert('❌ Error: ' + error.message);
+        }
+    }
+    
+    // Email/Password login
+    window.sbSignInEmail = async function(email, password) {
+        if (!email || !password) {
+            alert('Please enter email and password');
+            return;
+        }
+        
+        try {
+            const result = await signInWithEmailAndPassword(auth, email, password);
+            console.log('✅ Logged in with email:', result.user.email);
+            setTimeout(() => location.reload(), 500);
+        } catch(error) {
+            console.error('Login error:', error);
             alert('❌ Error: ' + error.message);
         }
     }
