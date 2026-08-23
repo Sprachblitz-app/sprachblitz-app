@@ -4530,7 +4530,6 @@ if (window.currentUser && !window.currentUser.isAnonymous) {
     </div>
   `;
 }
-
 // Show login form if NOT logged in
 return `
         <div class="rounded-2xl p-4 space-y-2" style="background:#1e293b">
@@ -4648,9 +4647,9 @@ return `
               <p class="text-[10px] font-bold od-dim">Sprachblitz ${APP_BUILD} \u00b7 ${totalXPAmount} XP \u00b7 ${daysLearned} ${daysLearned === 1 ? 'Tag' : 'Tage'} gelernt</p>
             </div>
           </div>
-        </div>`;
+        </div>
+        `;
     }
-
     // ===================== Profile, settings, Daily Blitz =====================
     // There is no server behind this app, so there is no account and no password.
     // "Profile" means a name and an avatar stored on this device only, and the
@@ -4779,7 +4778,6 @@ return `
           options: opts,
           correct: opts.indexOf(w.english),
           explain: w.hint || ''
-        });
       });
       // One question is audio-only: nothing to read, you have to listen.
       const heard = shuffle(pool).find(w => w.german && w.german.length < 26);
@@ -4808,7 +4806,6 @@ return `
         out.push({
           kind: 'grammar', prompt: q.prompt, speak: null, ask: q.ask,
           options: q.options, correct: q.correct, explain: q.explain
-        });
       });
       return shuffle(out).slice(0, BLITZ_LENGTH);
     }
