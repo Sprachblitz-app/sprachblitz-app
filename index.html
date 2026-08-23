@@ -80,8 +80,7 @@
             alert('❌ Google Sign-In Error:\n' + error.message + '\n\nMake sure you:\n1. Accept the Google popup\n2. Verify your email\n3. Check Firebase OAuth consent screen is configured');
         }
     }
-    
-    // Email/Password signup
+      // Email/Password signup
     window.sbCreateAccount = async function() {
         const email = document.querySelector('input[type="email"]')?.value;
         const password = document.querySelector('input[type="password"]')?.value;
@@ -90,12 +89,7 @@
             alert('Please enter email and password');
             return;
         }
-   // ===== LOGOUT FUNCTION =====
-window.sbLogout = function() {
-    console.log('🚪 Logging out...');
-    window.currentUser = null;
-    location.reload();
-}
+        
         try {
             const result = await createUserWithEmailAndPassword(auth, email, password);
             console.log('✅ Account created:', result.user.email);
@@ -105,8 +99,14 @@ window.sbLogout = function() {
         }
     }
     
+    // ===== LOGOUT FUNCTION =====
+    window.sbLogout = function() {
+        console.log('🚪 Logging out...');
+        window.currentUser = null;
+        location.reload();
+    }
+    
     console.log('Firebase ready');
-</script>
   <!-- Link previews on LinkedIn, WhatsApp, Slack, X, Facebook, iMessage. -->
   <meta name="description" content="Learn German A1 to B2 with Bruno: vocabulary, grammar, four skills and mock exams. Free, works offline, installs on any device.">
   <link rel="canonical" href="https://sprachblitz-app.github.io/sprachblitz-app/">
@@ -6835,37 +6835,19 @@ return `
         banner.style.background = 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)';
       }
     }
-      // Update KONTO section to show user email and logout button
-if (user && !user.isAnonymous) {
-    console.log('✅ User logged in, updating KONTO...');
-    
-    const kontoElement = document.querySelector('[style*="background:#1e293b"]');
-    
-    if (kontoElement) {
-        console.log('✅ Found KONTO, showing logged-in state');
-        
-       
-        document.body.appendChild(modal);
-
-               document.getElementById('trialSignupBtn').addEventListener('click', function() {
-          window.location.href = 'login.html';
-        });
-      }
-    }
-
-    // CHECK IF USER IS AUTHENTICATED - ONLY START TRIAL FOR ANONYMOUS USERS
-    onAuthStateChanged(auth, (user) => {
+      onAuthStateChanged(auth, (user) => {
       console.log('[trial] Auth state changed. User:', user ? user.email : 'Anonymous');
+      window.currentUser = user;
       
       if (user && !user.isAnonymous) {
-        // User is logged in - don't show trial
         console.log('[trial] User is authenticated, skipping trial');
         const banner = document.getElementById('trialBanner');
         if (banner) banner.remove();
         document.body.style.paddingTop = '0';
-
-      console.log('[trial] User is anonymous or not authenticated, starting trial');
-      startTrialTimer();
+      } else {
+        console.log('[trial] User is anonymous, starting trial');
+        startTrialTimer();
+      }
     });
      </script>
 </html>
