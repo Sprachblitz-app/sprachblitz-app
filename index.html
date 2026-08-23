@@ -80,7 +80,8 @@
             alert('❌ Google Sign-In Error:\n' + error.message + '\n\nMake sure you:\n1. Accept the Google popup\n2. Verify your email\n3. Check Firebase OAuth consent screen is configured');
         }
     }
-      // Email/Password signup
+    
+    // Email/Password signup
     window.sbCreateAccount = async function() {
         const email = document.querySelector('input[type="email"]')?.value;
         const password = document.querySelector('input[type="password"]')?.value;
@@ -89,7 +90,12 @@
             alert('Please enter email and password');
             return;
         }
-        
+   // ===== LOGOUT FUNCTION =====
+window.sbLogout = function() {
+    console.log('🚪 Logging out...');
+    window.currentUser = null;
+    location.reload();
+}
         try {
             const result = await createUserWithEmailAndPassword(auth, email, password);
             console.log('✅ Account created:', result.user.email);
@@ -99,14 +105,8 @@
         }
     }
     
-    // ===== LOGOUT FUNCTION =====
-    window.sbLogout = function() {
-        console.log('🚪 Logging out...');
-        window.currentUser = null;
-        location.reload();
-    }
-    
     console.log('Firebase ready');
+</script>
   <!-- Link previews on LinkedIn, WhatsApp, Slack, X, Facebook, iMessage. -->
   <meta name="description" content="Learn German A1 to B2 with Bruno: vocabulary, grammar, four skills and mock exams. Free, works offline, installs on any device.">
   <link rel="canonical" href="https://sprachblitz-app.github.io/sprachblitz-app/">
@@ -4530,6 +4530,7 @@ if (window.currentUser && !window.currentUser.isAnonymous) {
     </div>
   `;
 }
+
 // Show login form if NOT logged in
 return `
         <div class="rounded-2xl p-4 space-y-2" style="background:#1e293b">
@@ -4562,6 +4563,14 @@ return `
           ${authMsg ? `<p class="text-[11px] font-bold od-amber pt-1">${authMsg}</p>` : ''}
         </div>
       `;
+async function sbLogout() {
+  const { signOut } = await import('./sb-auth.js');
+  signOut(auth).then(() => {
+    window.location.href = './index.html';
+  });
+}
+    }
+
     // The settings sheet is rendered on top of whatever tab is open.
     function settingsSheetHTML() {
       if (!settingsOpen) return '';
@@ -4646,9 +4655,9 @@ return `
               <p class="text-[10px] font-bold od-dim">Sprachblitz ${APP_BUILD} \u00b7 ${totalXPAmount} XP \u00b7 ${daysLearned} ${daysLearned === 1 ? 'Tag' : 'Tage'} gelernt</p>
             </div>
           </div>
-        </div>
-        `;
+        </div>`;
     }
+
     // ===================== Profile, settings, Daily Blitz =====================
     // There is no server behind this app, so there is no account and no password.
     // "Profile" means a name and an avatar stored on this device only, and the
@@ -4777,6 +4786,7 @@ return `
           options: opts,
           correct: opts.indexOf(w.english),
           explain: w.hint || ''
+        });
       });
       // One question is audio-only: nothing to read, you have to listen.
       const heard = shuffle(pool).find(w => w.german && w.german.length < 26);
@@ -4805,9 +4815,11 @@ return `
         out.push({
           kind: 'grammar', prompt: q.prompt, speak: null, ask: q.ask,
           options: q.options, correct: q.correct, explain: q.explain
-      }});
+        });
+      });
       return shuffle(out).slice(0, BLITZ_LENGTH);
-      }
+    }
+
     function startDailyBlitz() {
       blitzQuestions = buildBlitzQuestions();
       if (!blitzQuestions.length) return;
@@ -6667,6 +6679,7 @@ return `
 
     // The first tap anywhere unlocks speech for the rest of the session on iOS
     // (speech no longer needs priming - see primeSpeech)
+
     // Preload speech synthesis voices so German audio is ready on first play
     if ('speechSynthesis' in window) {
       window.speechSynthesis.getVoices();
@@ -6835,19 +6848,62 @@ return `
         banner.style.background = 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)';
       }
     }
-      onAuthStateChanged(auth, (user) => {
+      // Update KONTO section to show user email and logout button
+if (user && !user.isAnonymous) {
+    console.log('✅ User logged in, updating KONTO...');
+    
+    const kontoElement = document.querySelector('[style*="background:#1e293b"]');
+    
+    if (kontoElement) {
+        console.log('✅ Found KONTO, showing logged-in state');
+        
+        // Set data attribute to prevent re-rendering
+        kontoElement.setAttribute('data-user-logged-in', 'true');
+        
+        kontoElement.innerHTML = `
+            <div class="rounded-2xl p-4 space-y-2" style="background:#1e293b">
+              <p class="text-[10px] font-black uppercase tracking-wider od-muted">✅ KONTO</p>
+              <p class="text-[11px] font-bold od-dim leading-relaxed">
+                📧 <strong>${user.email}</strong>
+              </p>
+              <p class="text-[10px] text-green-400 font-bold">✅ Logged In Successfully</p>
+              <button onclick="sbLogout()" class="btn3d w-full py-3 rounded-xl text-xs font-black bg-red-600 hover:bg-red-700 text-white">
+                Logout
+              </button>
+            </div>
+          `;
+    }
+        document.body.appendChild(modal);
+
+               document.getElementById('trialSignupBtn').addEventListener('click', function() {
+          window.location.href = 'login.html';
+        });
+      }
+    }
+
+    // CHECK IF USER IS AUTHENTICATED - ONLY START TRIAL FOR ANONYMOUS USERS
+    onAuthStateChanged(auth, (user) => {
       console.log('[trial] Auth state changed. User:', user ? user.email : 'Anonymous');
-      window.currentUser = user;
       
       if (user && !user.isAnonymous) {
+        // User is logged in - don't show trial
         console.log('[trial] User is authenticated, skipping trial');
         const banner = document.getElementById('trialBanner');
         if (banner) banner.remove();
         document.body.style.paddingTop = '0';
-      } else {
-        console.log('[trial] User is anonymous, starting trial');
-        startTrialTimer();
-      }
+
+      console.log('[trial] User is anonymous or not authenticated, starting trial');
+      startTrialTimer();
     });
+  });
+  
+// ===== LOGOUT FUNCTION =====
+window.sbLogout = function() {
+    console.log('🚪 Logging out...');
+    window.currentUser = null;
+    setTimeout(() => {
+        location.reload();
+    }, 300);
+}
      </script>
 </html>
