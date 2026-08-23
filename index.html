@@ -4562,7 +4562,6 @@ return `
           ${authMsg ? `<p class="text-[11px] font-bold od-amber pt-1">${authMsg}</p>` : ''}
         </div>
       `;
-  });
     // The settings sheet is rendered on top of whatever tab is open.
     function settingsSheetHTML() {
       if (!settingsOpen) return '';
@@ -6669,7 +6668,6 @@ return `
 
     // The first tap anywhere unlocks speech for the rest of the session on iOS
     // (speech no longer needs priming - see primeSpeech)
-
     // Preload speech synthesis voices so German audio is ready on first play
     if ('speechSynthesis' in window) {
       window.speechSynthesis.getVoices();
