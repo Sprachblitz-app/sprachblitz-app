@@ -4805,7 +4805,7 @@ return `
         out.push({
           kind: 'grammar', prompt: q.prompt, speak: null, ask: q.ask,
           options: q.options, correct: q.correct, explain: q.explain
-      });
+      }});
       return shuffle(out).slice(0, BLITZ_LENGTH);
       }
     function startDailyBlitz() {
