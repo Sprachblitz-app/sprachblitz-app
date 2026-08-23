@@ -1,126 +1,144 @@
-// Sprachblitz service worker
-// Bump CACHE_VERSION on every deploy, or users keep the old app.
-const CACHE_VERSION = 'sprachblitz-v28';
+// ===== SPRACHBLITZ SERVICE WORKER =====
+// Enables offline mode, caching, and PWA installation
 
-const APP_SHELL = [
+const CACHE_VERSION = 'sprachblitz-v28';
+const CACHE_URLS = [
   './',
   './index.html',
+  './sb-auth.js',
   './manifest.json',
-  './icon-192.png',
-  './icon-512.png',
-  './grammar-batch1.js',
-  './grammar-batch2.js',
-  './grammar-batch3.js',
-  './grammar-batch4.js',
-  './apple-touch-icon.png',
-  './bears/bear-stand.png',
-  './bears/bear-sit.png',
-  './bears/bear-wave.png',
-  './bears/bear-think.png',
-  './bears/bear-sleep.png',
-  './bears/bear-dance.png',
-  './bears/bear-jump.png',
-  './bears/bear-hug.png',
-  './bears/bear-walk.png',
-  './bears/bear-run.png'
+  './sw.js',
+  'https://cdn.tailwindcss.com',
+  'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap',
+  'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js',
+  'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js',
+  'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js'
 ];
 
-// Install: cache the shell. addAll fails entirely if one file 404s,
-// so each file is fetched individually and misses are tolerated.
+// ===== INSTALL EVENT =====
 self.addEventListener('install', event => {
-  event.waitUntil((async () => {
-    const cache = await caches.open(CACHE_VERSION);
-    await Promise.all(APP_SHELL.map(url =>
-      cache.add(url).catch(() => console.warn('[sw] skipped', url))
-    ));
-    self.skipWaiting();
-  })());
+  console.log('🔧 Service Worker installing...');
+  event.waitUntil(
+    caches.open(CACHE_VERSION).then(cache => {
+      console.log('📦 Caching app files...');
+      return cache.addAll([
+        './',
+        './index.html',
+        './sb-auth.js',
+        './manifest.json'
+      ]).catch(err => {
+        console.warn('⚠️ Cache error:', err);
+        // Don't fail install if cache fails
+      });
+    }).then(() => {
+      console.log('✅ Service Worker installed');
+      return self.skipWaiting();
+    })
+  );
 });
 
-// Activate: throw away caches from older versions.
+// ===== ACTIVATE EVENT =====
 self.addEventListener('activate', event => {
-  event.waitUntil((async () => {
-    const keys = await caches.keys();
-    await Promise.all(keys.filter(k => k !== CACHE_VERSION).map(k => caches.delete(k)));
-    await self.clients.claim();
-  })());
+  console.log('🚀 Service Worker activating...');
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_VERSION) {
+            console.log('🗑️ Removing old cache:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    }).then(() => {
+      console.log('✅ Service Worker activated');
+      return self.clients.claim();
+    })
+  );
 });
 
+// ===== FETCH EVENT - NETWORK FIRST STRATEGY =====
 self.addEventListener('fetch', event => {
-  const req = event.request;
-  if (req.method !== 'GET') return;
-
-  // Never cache authentication or database traffic — a stale login token
-  // or a cached progress read would be worse than being offline.
-  const url = new URL(req.url);
-  if (/googleapis\.com$|firebaseio\.com$|firebaseapp\.com$/.test(url.hostname)
-      && !/^fonts\./.test(url.hostname)) return;
-
-  // Navigations: network first, so a fresh deploy is picked up when online,
-  // but the cached page still opens on a train with no signal.
-  if (req.mode === 'navigate') {
-    event.respondWith((async () => {
-      try {
-        const fresh = await fetch(req);
-        const cache = await caches.open(CACHE_VERSION);
-        cache.put('./index.html', fresh.clone());
-        return fresh;
-      } catch (e) {
-        return (await caches.match('./index.html')) || Response.error();
-      }
-    })());
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') {
     return;
   }
 
-  // Our own code and config must never go stale, or a deploy silently fails
-  // to reach installed users. Network first, cache only as an offline fallback.
-  const ownCode = url.origin === self.location.origin
-    && /\.(js|json)$/.test(url.pathname);
-
-  // Pre-rendered audio never changes once written, so cache it hard. This is
-  // what lets the recorded German voice work offline.
-  if (url.origin === self.location.origin && /^\/.*\/audio\/.*\.(mp3|wav)$/.test(url.pathname)) {
-    event.respondWith((async () => {
-      const hit = await caches.match(req);
-      if (hit) return hit;
-      try {
-        const res = await fetch(req);
-        if (res && res.ok) (await caches.open(CACHE_VERSION)).put(req, res.clone());
-        return res;
-      } catch (e) { return Response.error(); }
-    })());
+  // Skip chrome extensions
+  if (event.request.url.startsWith('chrome-extension://')) {
     return;
   }
 
-  if (ownCode) {
-    event.respondWith((async () => {
-      try {
-        const fresh = await fetch(req, { cache: 'no-cache' });
-        const cache = await caches.open(CACHE_VERSION);
-        cache.put(req, fresh.clone());
-        return fresh;
-      } catch (e) {
-        const hit = await caches.match(req);
-        return hit || Response.error();
-      }
-    })());
+  // Network first for app files (get fresh version)
+  if (event.request.url.includes('index.html') || 
+      event.request.url.includes('sb-auth.js') ||
+      event.request.url.includes('manifest.json') ||
+      event.request.url.includes('sw.js')) {
+    
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          // Cache successful responses
+          if (response && response.status === 200) {
+            const responseClone = response.clone();
+            caches.open(CACHE_VERSION).then(cache => {
+              cache.put(event.request, responseClone);
+            });
+          }
+          return response;
+        })
+        .catch(() => {
+          // Fall back to cache if offline
+          return caches.match(event.request);
+        })
+    );
     return;
   }
 
-  // Everything else (images, fonts, the Tailwind CDN): cache first, then
-  // network. These rarely change and are what make offline work.
-  event.respondWith((async () => {
-    const hit = await caches.match(req);
-    if (hit) return hit;
-    try {
-      const res = await fetch(req);
-      if (res && (res.ok || res.type === 'opaque')) {
-        const cache = await caches.open(CACHE_VERSION);
-        cache.put(req, res.clone());
-      }
-      return res;
-    } catch (e) {
-      return hit || Response.error();
-    }
-  })());
+  // Cache first for everything else (CDN, Firebase, fonts)
+  event.respondWith(
+    caches.match(event.request)
+      .then(cachedResponse => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+
+        return fetch(event.request)
+          .then(response => {
+            // Don't cache failed responses
+            if (!response || response.status !== 200 || response.type === 'error') {
+              return response;
+            }
+
+            // Clone and cache successful responses
+            const responseClone = response.clone();
+            caches.open(CACHE_VERSION).then(cache => {
+              cache.put(event.request, responseClone);
+            });
+
+            return response;
+          })
+          .catch(error => {
+            console.log('❌ Fetch failed for:', event.request.url, error);
+            // Return a generic offline response
+            return new Response('Offline - unable to fetch resource', {
+              status: 503,
+              statusText: 'Service Unavailable',
+              headers: new Headers({
+                'Content-Type': 'text/plain'
+              })
+            });
+          });
+      })
+  );
 });
+
+// ===== MESSAGE EVENT - For update notifications =====
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    console.log('⚡ Service Worker: Skipping waiting');
+    self.skipWaiting();
+  }
+});
+
+console.log('✅ Service Worker loaded');
