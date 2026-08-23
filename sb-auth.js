@@ -77,6 +77,7 @@ onAuthStateChanged(auth, (user) => {
         }
     }
 });
+
 function updateLoginDisplay(user) {
     console.log('🔄 Updating login display for:', user.email);
     
@@ -112,6 +113,7 @@ function updateLoginDisplay(user) {
         console.warn('⚠️ KONTO element not found');
     }
 }
+
 // ===== EXPORTS =====
 export { 
   auth, 
