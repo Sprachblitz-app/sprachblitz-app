@@ -4563,14 +4563,9 @@ return `
           ${authMsg ? `<p class="text-[11px] font-bold od-amber pt-1">${authMsg}</p>` : ''}
         </div>
       `;
-async function sbLogout() {
-  const { signOut } = await import('./sb-auth.js');
-  signOut(auth).then(() => {
-    window.location.href = './index.html';
-  });
-}
-    }
 
+  });
+      }
     // The settings sheet is rendered on top of whatever tab is open.
     function settingsSheetHTML() {
       if (!settingsOpen) return '';
@@ -6857,22 +6852,7 @@ if (user && !user.isAnonymous) {
     if (kontoElement) {
         console.log('✅ Found KONTO, showing logged-in state');
         
-        // Set data attribute to prevent re-rendering
-        kontoElement.setAttribute('data-user-logged-in', 'true');
-        
-        kontoElement.innerHTML = `
-            <div class="rounded-2xl p-4 space-y-2" style="background:#1e293b">
-              <p class="text-[10px] font-black uppercase tracking-wider od-muted">✅ KONTO</p>
-              <p class="text-[11px] font-bold od-dim leading-relaxed">
-                📧 <strong>${user.email}</strong>
-              </p>
-              <p class="text-[10px] text-green-400 font-bold">✅ Logged In Successfully</p>
-              <button onclick="sbLogout()" class="btn3d w-full py-3 rounded-xl text-xs font-black bg-red-600 hover:bg-red-700 text-white">
-                Logout
-              </button>
-            </div>
-          `;
-    }
+       
         document.body.appendChild(modal);
 
                document.getElementById('trialSignupBtn').addEventListener('click', function() {
@@ -6896,14 +6876,5 @@ if (user && !user.isAnonymous) {
       startTrialTimer();
     });
   });
-  
-// ===== LOGOUT FUNCTION =====
-window.sbLogout = function() {
-    console.log('🚪 Logging out...');
-    window.currentUser = null;
-    setTimeout(() => {
-        location.reload();
-    }, 300);
-}
      </script>
 </html>
