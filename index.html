@@ -4807,8 +4807,7 @@ return `
           options: q.options, correct: q.correct, explain: q.explain
       });
       return shuffle(out).slice(0, BLITZ_LENGTH);
-    }
-
+      }
     function startDailyBlitz() {
       blitzQuestions = buildBlitzQuestions();
       if (!blitzQuestions.length) return;
