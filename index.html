@@ -60,7 +60,7 @@
   </script>
 
   <script type="module">
-    import { auth, sbAuthReady, signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from './sb-auth.js';
+    import { auth, sbAuthReady, signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, sendPasswordResetEmail } from './sb-auth.js';
     
     // Make auth available globally for logout function
     window.auth = auth;
@@ -147,6 +147,23 @@
             setTimeout(() => location.reload(), 500);
         } catch(error) {
             console.error('Login error:', error);
+            alert('❌ Error: ' + error.message);
+        }
+    }
+    
+    // Password reset function
+    window.sbResetPassword = async function(email) {
+        if (!email) {
+            alert('Please enter your email address first');
+            return;
+        }
+        
+        try {
+            await sendPasswordResetEmail(auth, email);
+            alert('✅ Password reset email sent! Check your inbox.');
+            console.log('✅ Password reset email sent to:', email);
+        } catch(error) {
+            console.error('Password reset error:', error);
             alert('❌ Error: ' + error.message);
         }
     }
@@ -4501,7 +4518,7 @@
     }
     function submitAuthForm() {
       authMsg = '';
-      if (authMode === 'signup') sbSignUpEmail(authEmail, authPass, authName || learnerName);
+      if (authMode === 'signup') sbCreateAccount();
       else sbSignInEmail(authEmail, authPass);
     }
 
