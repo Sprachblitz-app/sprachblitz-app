@@ -4563,9 +4563,8 @@ return `
           ${authMsg ? `<p class="text-[11px] font-bold od-amber pt-1">${authMsg}</p>` : ''}
         </div>
       `;
-
   });
-      }
+
     // The settings sheet is rendered on top of whatever tab is open.
     function settingsSheetHTML() {
       if (!settingsOpen) return '';
@@ -6875,6 +6874,5 @@ if (user && !user.isAnonymous) {
       console.log('[trial] User is anonymous or not authenticated, starting trial');
       startTrialTimer();
     });
-  });
      </script>
 </html>
