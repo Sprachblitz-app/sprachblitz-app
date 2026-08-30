@@ -3499,6 +3499,71 @@ function upgradeToPlan(plan) {
 }
 
 
+// GRAMMAR LEVEL TIER CHECKING
+function getGrammarItemLevel(grammarId) {
+  if (grammarId.startsWith('b2_')) return 'B2';
+  if (grammarId.startsWith('b1_')) return 'B1';
+  if (grammarId.startsWith('a2_')) return 'A2';
+  return 'A1';
+}
+
+function canAccessGrammarItem(grammarId) {
+  let userTier = localStorage.getItem('sb_user_tier') || 'free';
+  const level = getGrammarItemLevel(grammarId);
+  
+  if (userTier === 'free') {
+    return level === 'A1';
+  }
+  
+  if (userTier === 'starter') {
+    return level === 'A1' || level === 'A2';
+  }
+  
+  return true; // PRO can access all
+}
+
+function onGrammarItemClick(grammarId, grammarTitle) {
+  if (!canAccessGrammarItem(grammarId)) {
+    showPaywall('Grammar: ' + grammarTitle);
+    return;
+  }
+  // Access granted, open normally
+  const idx = a1GrammarDatabase.findIndex(g => g.id === grammarId);
+  if (idx !== -1) {
+    activeGrammarIndex = idx;
+    renderActiveTabModule();
+  }
+}
+
+// EXAM LEVEL TIER CHECKING
+function getExamLevel(examLevel) {
+  return examLevel || 'A1';
+}
+
+function canAccessExam(examLevel) {
+  let userTier = localStorage.getItem('sb_user_tier') || 'free';
+  const level = getExamLevel(examLevel);
+  
+  if (userTier === 'free') {
+    return level === 'A1';
+  }
+  
+  if (userTier === 'starter') {
+    return level === 'A1' || level === 'A2';
+  }
+  
+  return true; // PRO can access all
+}
+
+function onExamClick(examIdx, examLevel, examTitle) {
+  if (!canAccessExam(examLevel)) {
+    showPaywall('Exam: ' + examTitle);
+    return;
+  }
+  // Access granted, start exam
+  startSpecificMockExamSuite(examIdx);
+}
+
 // ROOM LEVEL LOCKING (A1/A2/B1/B2)
 function canAccessLevel(level) {
   let userTier = localStorage.getItem('sb_user_tier') || 'free';
@@ -6581,13 +6646,18 @@ return;
         let structuralAccordionHTML = '';
         a1GrammarDatabase.forEach((item, idx) => {
           const isOpen = (idx === activeGrammarIndex);
+          const isLocked = !canAccessGrammarItem(item.id);
+          const grammarLevel = getGrammarItemLevel(item.id);
+          
           structuralAccordionHTML += `
-            <div class="border border-slate-800 rounded-xl overflow-hidden ${isOpen ? 'bg-slate-950/40' : 'bg-slate-950/10'}">
-              <button onclick="activeGrammarIndex=${idx}; renderActiveTabModule();" class="w-full text-left p-3.5 text-xs font-black flex justify-between items-center transition-colors bg-slate-950 border-b border-slate-800/60 text-slate-200">
-                <span>${item.title}</span>
+            <div class="border border-slate-800 rounded-xl overflow-hidden ${isOpen ? 'bg-slate-950/40' : 'bg-slate-950/10'} ${isLocked ? 'opacity-50' : ''}">
+              <button onclick="${isLocked ? `onGrammarItemClick('${item.id}', ${safeOnclickArg(item.title)})` : `activeGrammarIndex=${idx}; renderActiveTabModule();`}" 
+                      class="w-full text-left p-3.5 text-xs font-black flex justify-between items-center transition-colors bg-slate-950 border-b border-slate-800/60 text-slate-200 ${isLocked ? 'cursor-not-allowed' : ''}" 
+                      ${isLocked ? 'style="opacity:0.6"' : ''}>
+                <span>${isLocked ? '🔒 ' : ''}${item.title}</span>
                 <span>${isOpen ? '▼' : '▶'}</span>
               </button>
-              ${isOpen ? `
+              ${isOpen && !isLocked ? `
                 <div class="p-4 space-y-3 bg-slate-900/40 animate-fadeIn">
                   <div>
                     <span class="text-[9px] uppercase tracking-wider font-extrabold text-indigo-400 block mb-0.5">Core Syntax Rules Directives</span>
@@ -6598,7 +6668,11 @@ return;
                     <p class="text-xs font-mono font-bold text-emerald-300 leading-snug">${item.example}</p>
                   </div>
                 </div>
-              ` : ''}
+              ` : (isOpen && isLocked ? `
+                <div class="p-4 bg-slate-900/40 text-center">
+                  <p class="text-xs text-slate-400">🔒 This grammar topic is locked. Upgrade to access!</p>
+                </div>
+              ` : '')}
             </div>
           `;
         });
@@ -6606,8 +6680,8 @@ return;
         container.innerHTML = `
           <div class="space-y-3">
             <div class="px-1">
-              <h3 class="text-sm font-black text-white">Goethe A1 Unified Grammar Curriculum Matrix</h3>
-              <p class="text-[10px] text-slate-400 mt-0.5">13 Essential morphological tracking nodes formatted for direct mobile deployment view.</p>
+              <h3 class="text-sm font-black text-white">Goethe Grammar Curriculum (A1-B2)</h3>
+              <p class="text-[10px] text-slate-400 mt-0.5">All grammar topics with tier-based access (Free: A1 only, Starter: A1-A2, Pro: A1-B2)</p>
             </div>
             <div class="space-y-2">${structuralAccordionHTML}</div>
           </div>
@@ -6770,21 +6844,28 @@ return;
       }
     }
 
-    // ===================== Goethe/Telc A1 Mock Exam Engine =====================
+    // ===================== Goethe/Telc Mock Exam Engine with Tier Locking =====================
     function renderExamsTab(container, conf) {
       if (!activeExamRunningMode) {
         let rows = '';
         mockExamsDatabase.forEach((ex, idx) => {
+          const isLocked = !canAccessExam(ex.level || 'A1');
+          const examLevel = ex.level || 'A1';
+          
           rows += `
-            <div class="${conf.cardBg} border p-4 rounded-xl flex flex-col justify-between space-y-3">
+            <div class="${conf.cardBg} border p-4 rounded-xl flex flex-col justify-between space-y-3 ${isLocked ? 'opacity-60' : ''}">
               <div>
                 <div class="flex items-center gap-2">
-                  <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-indigo-950 border border-indigo-800 text-indigo-300">${ex.level || 'A1'}</span>
+                  <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-indigo-950 border border-indigo-800 text-indigo-300">${isLocked ? '🔒 ' : ''}${examLevel}</span>
                   <h4 class="text-xs font-black text-white">${ex.title}</h4>
                 </div>
                 <p class="text-[10px] text-slate-400 mt-0.5">Hören • Lesen • Schreiben • Sprechen — ${ex.hoeren.length + ex.lesen.length} Testfragen</p>
               </div>
-              <button onclick="startSpecificMockExamSuite(${idx})" class="w-full py-2 bg-slate-950 hover:bg-slate-900 border border-indigo-900 text-indigo-400 font-extrabold text-[11px] rounded-lg transition-transform active:scale-95">Prüfung starten</button>
+              <button onclick="${isLocked ? `onExamClick(${idx}, ${safeOnclickArg(examLevel)}, ${safeOnclickArg(ex.title)})` : `startSpecificMockExamSuite(${idx})`}" 
+                      class="w-full py-2 transition-transform active:scale-95 font-extrabold text-[11px] rounded-lg ${isLocked ? 'bg-slate-800 border border-slate-700 text-slate-400 cursor-not-allowed opacity-60' : 'bg-slate-950 hover:bg-slate-900 border border-indigo-900 text-indigo-400'}"
+                      ${isLocked ? 'disabled' : ''}>
+                ${isLocked ? '🔒 Locked - Upgrade to unlock' : 'Prüfung starten'}
+              </button>
             </div>
           `;
         });
@@ -6792,7 +6873,7 @@ return;
           <div class="space-y-4">
             <div class="px-1">
               <h3 class="text-sm font-black tracking-tight text-white">Modellprüfungen</h3>
-              <p class="text-[11px] text-slate-400 font-medium">Vollständige Prüfungen mit allen vier Teilen: Hören, Lesen, Schreiben, Sprechen. Schreiben und Sprechen sind Übungsteile mit Musterlösung – bewertet werden sie nicht.</p>
+              <p class="text-[11px] text-slate-400 font-medium">Vollständige Prüfungen mit allen vier Teilen: Hören, Lesen, Schreiben, Sprechen. Schreiben und Sprechen sind Übungsteile mit Musterlösung – bewertet werden sie nicht. (Free: A1 only, Starter: A1-A2, Pro: A1-B2)</p>
             </div>
             <div class="space-y-3">${rows}</div>
           </div>
