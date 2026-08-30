@@ -7719,6 +7719,9 @@ if (user && !user.isAnonymous) {
           `;
     }
 
+      }
+    }
+
     // CHECK IF USER IS AUTHENTICATED - ONLY START TRIAL FOR ANONYMOUS USERS
     onAuthStateChanged(auth, (user) => {
       console.log('[trial] Auth state changed. User:', user ? user.email : 'Anonymous');
@@ -7731,10 +7734,11 @@ if (user && !user.isAnonymous) {
         const banner = document.getElementById('trialBanner');
         if (banner) banner.remove();
         document.body.style.paddingTop = '0';
-} else {
+      } else {
       console.log('[trial] User is anonymous or not authenticated, starting trial');
       startTrialTimer();
-    }
+      }
+    });
   });
   
 // ===== LOGOUT FUNCTION =====
