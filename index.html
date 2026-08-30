@@ -7719,9 +7719,6 @@ if (user && !user.isAnonymous) {
           `;
     }
 
-      }
-    }
-
     // CHECK IF USER IS AUTHENTICATED - ONLY START TRIAL FOR ANONYMOUS USERS
     onAuthStateChanged(auth, (user) => {
       console.log('[trial] Auth state changed. User:', user ? user.email : 'Anonymous');
