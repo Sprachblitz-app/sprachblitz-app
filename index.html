@@ -144,6 +144,7 @@ console.log('✅ Sprachblitz Audio System Ready');
   <link rel="manifest" href="./manifest.json">
   <link rel="apple-touch-icon" href="./apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js"></script>
   <title>Sprachblitz – Deutsch lernen A1 bis B2</title>
   <script>
     // Logout wrapper defined here, will be overridden by module import below
@@ -7243,7 +7244,7 @@ return;
             </div>
             ${skillKey === 'hoeren' ? `
               <div class="${conf.cardBg} border p-5 rounded-2xl shadow-xl space-y-3">
-                <button onclick="speakGerman(${safeOnclickArg(q.audioText)})" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs rounded-xl flex items-center justify-center gap-2">🔊 Audio abspielen</button>
+                <button onclick='speakGerman(${safeOnclickArg(q.audioText)})' class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs rounded-xl flex items-center justify-center gap-2">🔊 Audio abspielen</button>
                 <p class="text-xs font-bold leading-relaxed text-slate-200">${q.question}</p>
               </div>
             ` : `
@@ -7718,6 +7719,9 @@ if (user && !user.isAnonymous) {
             </div>
           `;
     }
+        });
+      }
+    }
 
     // CHECK IF USER IS AUTHENTICATED - ONLY START TRIAL FOR ANONYMOUS USERS
     onAuthStateChanged(auth, (user) => {
@@ -7731,8 +7735,11 @@ if (user && !user.isAnonymous) {
         const banner = document.getElementById('trialBanner');
         if (banner) banner.remove();
         document.body.style.paddingTop = '0';
-          } else {
-             console.log('[trial] User is anonymous or not authenticated, starting trial');
+
+      } else {
+        console.log('[trial] User is anonymous or not authenticated, starting trial');
+        startTrialTimer();
+      }
     });
   });
   
