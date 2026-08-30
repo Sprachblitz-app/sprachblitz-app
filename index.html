@@ -7718,13 +7718,6 @@ if (user && !user.isAnonymous) {
             </div>
           `;
     }
-        document.body.appendChild(modal);
-
-               document.getElementById('trialSignupBtn').addEventListener('click', function() {
-          window.location.href = 'login.html';
-        });
-      }
-    }
 
     // CHECK IF USER IS AUTHENTICATED - ONLY START TRIAL FOR ANONYMOUS USERS
     onAuthStateChanged(auth, (user) => {
