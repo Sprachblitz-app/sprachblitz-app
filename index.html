@@ -7731,10 +7731,10 @@ if (user && !user.isAnonymous) {
         const banner = document.getElementById('trialBanner');
         if (banner) banner.remove();
         document.body.style.paddingTop = '0';
-
+} else {
       console.log('[trial] User is anonymous or not authenticated, starting trial');
       startTrialTimer();
-    });
+    }
   });
   
 // ===== LOGOUT FUNCTION =====
