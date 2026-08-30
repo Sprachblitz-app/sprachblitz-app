@@ -464,6 +464,160 @@ console.log('✅ Sprachblitz Audio System Ready');
     .on-dark .od-amber  { color: #fbbf24 !important; }
     .on-dark .od-green  { color: #34d399 !important; }
     .on-dark .od-dim    { color: #64748b !important; }
+
+/* PAYWALL STYLING */
+.paywall-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.paywall-modal {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border: 2px solid #4f46e5;
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  color: white;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.paywall-modal .close-x {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.paywall-modal h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.paywall-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.paywall-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid #4f46e5;
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+}
+
+.paywall-card.featured {
+  border-color: #06b6d4;
+  background: rgba(6, 182, 212, 0.1);
+}
+
+.paywall-card .badge {
+  position: absolute;
+  top: -12px;
+  right: 10px;
+  background: #06b6d4;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.paywall-card h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.paywall-card .price {
+  font-size: 28px;
+  font-weight: bold;
+  color: #06b6d4;
+  margin-bottom: 15px;
+}
+
+.paywall-card .price span {
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+.paywall-card ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 15px;
+  font-size: 12px;
+  text-align: left;
+}
+
+.paywall-card ul li {
+  padding: 4px 0;
+  color: #cbd5e1;
+}
+
+.btn-primary, .btn-secondary {
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background: #4f46e5;
+  color: white;
+  margin-top: 10px;
+}
+
+.btn-primary:hover {
+  background: #6366f1;
+}
+
+.btn-primary.pro {
+  background: #06b6d4;
+}
+
+.btn-primary.pro:hover {
+  background: #0891b2;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #cbd5e1;
+  border: 2px solid #475569;
+  margin-top: 15px;
+}
+
+.btn-secondary:hover {
+  border-color: #64748b;
+  color: white;
+}
+
+.locked-topic {
+  opacity: 0.6;
+}
+
+.locked-topic:hover {
+  opacity: 0.7;
+}
   </style>
 </head>
 <body class="notranslate min-h-screen flex flex-col bg-slate-950 text-slate-100" translate="no">
@@ -3253,6 +3407,96 @@ console.log('✅ Sprachblitz Audio System Ready');
       "Drinks (Getr\u00e4nke)": "\u2615",
       "DYNAM_NUMBERS": "\u221e"
     };
+// FREE TIER TOPICS (Only these 10 A1 topics available for free)
+const freeTierVocabTopics = [
+  "Alphabet (Alphabet)",
+  "Numbers (Zahlen)",
+  "Greetings (Begrüßung)",
+  "Family (Die Familie)",
+  "Days (Tage)",
+  "Food (Essen)",
+  "Drinks (Getränke)",
+  "Colours (Farben)",
+  "Time (Uhrzeit Layouts)",
+  "Introductions (Vorstellung)"
+];
+
+// Check if user can access topic
+function canAccessVocabTopic(topicName) {
+  let userTier = localStorage.getItem('sb_user_tier') || 'free';
+  
+  if (userTier === 'free') {
+    return freeTierVocabTopics.includes(topicName);
+  }
+  
+  if (userTier === 'starter') {
+    let b1Topics = ['Education (Schule & Lernen)'];
+    let b2Topics = ['Working World (Arbeitswelt)', 'Economy & Money (Wirtschaft)', 'Education & Research (Bildung)', 'Media & Public Life (Medien)', 'Society & Politics (Gesellschaft)', 'Law & Administration (Recht)', 'Environment & Climate (Umwelt)', 'Health & Mind (Gesundheit)', 'Technology & Data (Technik)', 'Culture & Identity (Kultur)', 'Argument & Opinion (Argumentation)', 'Discussion Phrases (Redemittel)'];
+    return !b1Topics.includes(topicName) && !b2Topics.includes(topicName);
+  }
+  
+  return true;
+}
+
+function onVocabTopicClick(topicName) {
+  if (!canAccessVocabTopic(topicName)) {
+    showPaywall(topicName);
+    return;
+  }
+  selectVocabCategory(topicName);
+}
+
+function showPaywall(topicName) {
+  let html = `
+    <div class="paywall-overlay" onclick="closePaywall()">
+      <div class="paywall-modal" onclick="event.stopPropagation()">
+        <button onclick="closePaywall()" class="close-x">✕</button>
+        
+        <h2>🔒 Premium Content</h2>
+        <p>Unlock "<strong>${topicName}</strong>" and more!</p>
+        
+        <div class="paywall-options">
+          <div class="paywall-card">
+            <h3>STARTER</h3>
+            <p class="price">€2.99<span>/month</span></p>
+            <ul>
+              <li>✅ 22 A1 topics</li>
+              <li>✅ 24 A2 topics</li>
+              <li>✅ Unlimited lessons</li>
+            </ul>
+            <button class="btn-primary" onclick="upgradeToPlan('starter')">Upgrade STARTER</button>
+          </div>
+          
+          <div class="paywall-card featured">
+            <div class="badge">Best Value</div>
+            <h3>PRO</h3>
+            <p class="price">€9.99<span>/month</span></p>
+            <ul>
+              <li>✅ All 59 topics</li>
+              <li>✅ A1-B2 full</li>
+              <li>✅ Offline</li>
+              <li>✅ No ads</li>
+            </ul>
+            <button class="btn-primary pro" onclick="upgradeToPlan('pro')">Upgrade PRO</button>
+          </div>
+        </div>
+        
+        <button class="btn-secondary" onclick="closePaywall()">Continue Free</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+
+function closePaywall() {
+  let overlay = document.querySelector('.paywall-overlay');
+  if (overlay) overlay.remove();
+}
+
+function upgradeToPlan(plan) {
+  alert('Redirecting to ' + plan.toUpperCase() + ' payment...');
+}
 
     // The vocabulary tab lists every level's topics, so the card header names the right one.
     function vocabLevelOf(cat) {
@@ -6188,9 +6432,9 @@ return;
         allCategories.forEach(cat => {
           const on = cat === selectedVocabCategory;
           categoryButtonsHTML += `
-            <button onclick='selectVocabCategory(${safeOnclickArg(cat)})' class="p-3 rounded-2xl border text-left flex flex-col gap-1 transition-all active:scale-95 ${on ? 'bg-indigo-600 border-indigo-400 text-white' : 'bg-slate-800 border-slate-700 text-slate-200'}">
+            <button onclick='onVocabTopicClick(${safeOnclickArg(cat)})' class="p-3 rounded-2xl border text-left flex flex-col gap-1 transition-all active:scale-95 ${!canAccessVocabTopic(cat) ? 'locked-topic' : ''} ${on ? 'bg-indigo-600 border-indigo-400 text-white' : 'bg-slate-800 border-slate-700 text-slate-200'}">
               <span class="text-lg leading-none">${iconFor(cat)}</span>
-              <span class="text-[11px] font-black leading-tight">${labelFor(cat)}</span>
+              <span class="text-[11px] font-black leading-tight">${!canAccessVocabTopic(cat) ? '🔒 ' : ''}${labelFor(cat)}</span>
               <span class="text-[9px] font-bold ${on ? 'text-indigo-100' : 'text-slate-500'}">${countFor(cat)}</span>
             </button>`;
         });
