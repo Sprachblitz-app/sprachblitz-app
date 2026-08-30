@@ -3498,6 +3498,30 @@ function upgradeToPlan(plan) {
   alert('Redirecting to ' + plan.toUpperCase() + ' payment...');
 }
 
+
+// ROOM LEVEL LOCKING (A1/A2/B1/B2)
+function canAccessLevel(level) {
+  let userTier = localStorage.getItem('sb_user_tier') || 'free';
+  
+  if (userTier === 'free') {
+    return level === 'A1';
+  }
+  
+  if (userTier === 'starter') {
+    return level === 'A1' || level === 'A2';
+  }
+  
+  return true; // PRO can access all levels
+}
+
+function onLevelClick(level) {
+  if (!canAccessLevel(level)) {
+    showPaywall('Level ' + level + ' (Bruno\'s ' + (level === 'A2' ? 'Street' : level === 'B1' ? 'Town' : 'District') + ')');
+    return;
+  }
+  // User can access, open it normally
+  setLevel(level);
+}
     // The vocabulary tab lists every level's topics, so the card header names the right one.
     function vocabLevelOf(cat) {
       if (a2VocabularyDatabase[cat]) return 'A2';
@@ -6064,11 +6088,11 @@ return `
             ${['A1','A2','B1','B2'].map(lv => {
               const pr = levelProgress(lv);
               const on = activeLevel === lv;
-              const locked = lv === 'A2' && !a1Complete() && pr.done === 0;
-              return `<button onclick="setLevel('${lv}')" class="btn3d p-3 rounded-2xl text-left"
-                        style="background:${on ? '#4f46e5' : '#1e293b'}">
+              const isLocked = !canAccessLevel(lv);
+              return `<button onclick="onLevelClick('${lv}')" class="btn3d p-3 rounded-2xl text-left transition-opacity ${isLocked ? 'opacity-50 cursor-not-allowed' : ''}"
+                        style="background:${on ? '#4f46e5' : '#1e293b'}" ${isLocked ? 'disabled' : ''}>
                 <div class="flex items-center justify-between gap-2">
-                  <span class="text-sm font-black text-white">${lv}</span>
+                  <span class="text-sm font-black text-white">${isLocked ? '🔒 ' : ''}${lv}</span>
                   <span class="text-[10px] font-black" style="color:${on ? '#c7d2fe' : '#64748b'}">${pr.done}/${pr.total}</span>
                 </div>
                 <p class="text-[10px] font-bold" style="color:${on ? '#c7d2fe' : '#64748b'}">
@@ -6428,8 +6452,16 @@ return;
         const iconFor = (c) => vocabCategoryIcons[c] || '\ud83d\udcd8';
         const countFor = (c) => c === 'DYNAM_NUMBERS' ? '\u221e' : (allVocabularyDatabase[c] ? allVocabularyDatabase[c].length + ' cards' : '');
 
+        // SORT: Unlocked topics first (continuous), then locked topics below
+        const sortedCategories = allCategories.sort((a, b) => {
+          const aLocked = !canAccessVocabTopic(a);
+          const bLocked = !canAccessVocabTopic(b);
+          if (aLocked === bLocked) return 0;
+          return aLocked ? 1 : -1; // unlocked first
+        });
+
         let categoryButtonsHTML = '';
-        allCategories.forEach(cat => {
+        sortedCategories.forEach(cat => {
           const on = cat === selectedVocabCategory;
           categoryButtonsHTML += `
             <button onclick='onVocabTopicClick(${safeOnclickArg(cat)})' class="p-3 rounded-2xl border text-left flex flex-col gap-1 transition-all active:scale-95 ${!canAccessVocabTopic(cat) ? 'locked-topic' : ''} ${on ? 'bg-indigo-600 border-indigo-400 text-white' : 'bg-slate-800 border-slate-700 text-slate-200'}">
