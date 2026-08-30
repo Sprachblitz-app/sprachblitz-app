@@ -6159,26 +6159,9 @@ return `
         if (activeGameMode === 'none' && !activeExamRunningMode) {
          container.innerHTML = `
 <div class="flex flex-col h-full bg-slate-900">
-  <!-- HOME HEADER -->
-  <div class="px-4 py-4 border-b border-slate-800 space-y-3 flex-shrink-0">
+  <!-- HOME HEADER - MINIMAL -->
+  <div class="px-4 py-4 border-b border-slate-800 flex-shrink-0">
     <h1 class="text-2xl font-black text-white">Guten Tag! 👋</h1>
-    
-    <!-- Stats Row -->
-    <div class="grid grid-cols-2 gap-3">
-      <div class="bg-slate-800 rounded-lg p-3 text-center">
-        <p class="text-xs text-slate-400">🔥 Streak</p>
-        <p class="text-lg font-black text-white">${localStorage.getItem('sb_streak_count') || 0} days</p>
-      </div>
-      <div class="bg-slate-800 rounded-lg p-3 text-center">
-        <p class="text-xs text-slate-400">✨ Today's XP</p>
-        <p class="text-lg font-black text-white">${localStorage.getItem('sb_daily_xp') || 0} XP</p>
-      </div>
-    </div>
-    
-    <!-- START LEARNING Button -->
-    <button onclick="switchTab('vocabulary')" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-black py-3 px-4 rounded-xl transition-all active:scale-95 shadow-lg">
-      ▶️ START LEARNING TODAY
-    </button>
   </div>
   
   <!-- ROOM VISUAL (SCROLLABLE) -->
