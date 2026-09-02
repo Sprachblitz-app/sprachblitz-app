@@ -2043,56 +2043,63 @@ console.log('✅ Sprachblitz Audio System Ready');
 
     // Refactored Adjective / Conjugation / Article Grammar Database Array
     const a1GrammarDatabase = [
-      { id: "g_art", title: "1. Definite & Indefinite Articles", rules: "German specifies noun sets through Masculine (der/ein), Feminine (die/eine), Neuter (das/ein). Plurals carry 'die' but no baseline indefinite article.", example: "Der Mann, eine Frau, das Kind." },
-      { id: "g_pron", title: "2. Personal Pronouns Matrix", rules: "Subjects are tracked via personal handles: ich (I), du (you), er/sie/es (he/she/it), wir (us), ihr (you plural), sie/Sie (they/Formal You).", example: "Ich bin hier. Du lernst schnell." },
-      { id: "g_sein", title: "3. Irregular Sein (To Be) Forms", rules: "The foundation auxiliary verb 'sein' shifts conjugation fields dynamically: ich bin, du bist, er/sie/es ist, wir sind, ihr seid, sie/Sie sind.", example: "Wir sind in der Arena. Ihr seid klug." },
-      { id: "g_conj", title: "4. Regular Verb Conjugation Suffixes", rules: "Drop infinitive tail (-en) and apply standardized pronoun terminations: -e, -st, -t, -en, -t, -en.", example: "Ich spiele, du spielst, er spielt, wir spielen." },
-      { id: "g_poss", title: "5. Possessive Articles", rules: "Indicate ownership. Base items follow pronoun structures: mein (my), dein (your), sein (his), ihr (her/their), unser (our), euer (your pl). Appends '-e' if item is feminine/plural.", example: "Das ist mein Tisch. Wo ist meine Jacke?" },
-      { id: "g_mod", title: "6. Modal Verbs Structure", rules: "Verbs like 'können' (can), 'müssen' (must), 'wollen' (want) conjugate irregularly in singular positions and push main infinitive companion verbs to the sentence tail.", example: "Ich kann Deutsch sprechen. (Infinitive 'sprechen' anchors at the extreme tail position.)" },
-      { id: "g_tren", title: "7. Trennbar (Separable) Verbs", rules: "Prefix particles split off active base stems during simple sentence layouts, anchoring directly at the terminal punctuation boundary.", example: "aufstehen -> Ich stehe um 6:00 Uhr auf. ('auf' detaches to the tail window completely.)" },
-      { id: "g_imp", title: "8. Imperativ Commands Formulation", rules: "Used to declare instructions/requests. The 'du' command strips away both the pronoun 'du' and the tail standard '-st' suffix tracking.", example: "Komm hierher! (Infinitive 'kommen' drops pronoun and suffix constraints entirely.)" },
-      { id: "g_comp", title: "9. Degrees of Comparison Adjectives", rules: "Modifiers escalate structural attributes using baseline rules, adding '-er' for comparative forms and 'am ...-sten' for superlative declarations.", example: "klein -> kleiner -> am kleinsten. alt -> älter -> am ältesten." },
-      { id: "g_perf", title: "10. Present Perfect Past Construction", rules: "Form past statements using auxiliary helpers ('haben' or 'sein' based on motion rules) at position 2, placing a 'Partizip II' particle component at sentence tail.", example: "Ich habe Deutsch gelernt. Wir sind nach Berlin gefahren." },
-      { id: "g_habs", title: "11. Past Tense Haben & Sein (Präteritum)", rules: "Simple past framework constants used universally for auxiliary assets. Haben -> hatte. Sein -> war. Conjugates via standardized rules.", example: "Ich hatte ein Haus. Gestern war ich müde." },
-      { id: "g_case", title: "12. Akkusativ vs Dativ Case Tracking", rules: "Akkusativ targets direct action receivers (Masculine den/einen). Dativ models indirect benefit targets (dem/der/dem/den).", example: "Ich gebe dem Mann (Dativ indirect object) den Ball (Akkusativ direct item asset)." },
-      { id: "g_mail", title: "13. Formal Email Writing Blueprints", rules: "Structured communications require strict CEFR protocols: Greeting ('Sehr geehrte Damen und Herren,'), body block content, and formal signoff lines ('Mit freundlichen Grüßen').", example: "Sehr geehrte Frau Müller, ... Mit freundlichen Grüßen, Jhansi." },
-      { id: "a2_weil", title: "A2.1 Nebensatz mit 'weil'", rules: "'weil' gives a reason and pushes the conjugated verb to the very end of its clause.", example: "Ich bleibe zu Hause, weil ich krank bin." },
-      { id: "a2_dass", title: "A2.2 Nebensatz mit 'dass'", rules: "'dass' reports a thought or statement. As with 'weil', the verb moves to the end.", example: "Ich glaube, dass er heute kommt." },
-      { id: "a2_wenn", title: "A2.3 Nebensatz mit 'wenn'", rules: "'wenn' means 'if' or 'whenever'. Verb last. If the wenn-clause comes first, the main clause starts with its verb.", example: "Wenn es regnet, bleibe ich zu Hause." },
-      { id: "a2_praet", title: "A2.4 Perfekt oder Präteritum", rules: "Spoken German uses the Perfekt for the past. Written German, and the verbs sein, haben and the modals, prefer the Präteritum.", example: "Gestern war ich müde. Ich habe lange geschlafen." },
-      { id: "a2_wechsel", title: "A2.5 Wechselpräpositionen", rules: "in, an, auf, über, unter, vor, hinter, neben, zwischen take the Akkusativ for movement (wohin?) and the Dativ for position (wo?).", example: "Ich gehe in die Küche. Ich bin in der Küche." },
-      { id: "a2_reflex", title: "A2.6 Reflexive Verben", rules: "Reflexive verbs carry a pronoun that points back at the subject: mich, dich, sich, uns, euch, sich.", example: "Ich freue mich. Wir treffen uns um acht." },
-      { id: "a2_adj", title: "A2.7 Adjektivendungen", rules: "After a definite article the adjective takes -e in the nominative singular and -en almost everywhere else.", example: "der große Mann, die kleine Frau, das alte Haus, den großen Mann" },
-      { id: "a2_komp", title: "A2.8 Komparativ vor dem Nomen", rules: "A comparative before a noun still needs its adjective ending on top of the -er.", example: "Ich suche eine größere Wohnung. Das ist der bessere Weg." },
-      { id: "a2_konj", title: "A2.9 Konjunktiv II: höfliche Bitten", rules: "würde, könnte, hätte and wäre make requests polite and express wishes.", example: "Könnten Sie mir bitte helfen? Ich hätte gern einen Kaffee." },
-      { id: "a2_passiv", title: "A2.10 Passiv Präsens", rules: "The passive is formed with 'werden' plus the Partizip II. It puts the action, not the doer, in focus.", example: "Das Formular wird hier ausgefüllt. Die Tür wird geschlossen." },
-      { id: "a2_genitiv", title: "A2.11 Genitiv", rules: "The Genitiv shows possession: des/eines + -s for masculine and neuter, der/einer for feminine and plural.", example: "das Auto des Mannes, die Farbe der Tür" },
-      { id: "a2_verbprep", title: "A2.12 Verben mit Präposition", rules: "Many verbs are locked to one preposition and one case, and have to be learned as a pair.", example: "warten auf + Akk, sich freuen auf + Akk, helfen bei + Dat" },
-      { id: "b1_rel", title: "B1.1 Relativsätze", rules: "A relative clause describes a noun. The relative pronoun takes its gender and number from that noun, but its case from its own clause. Verb goes last.", example: "Der Mann, der dort steht, ist mein Chef." },
-      { id: "b1_konj2", title: "B1.2 Irreale Bedingungen", rules: "Konjunktiv II describes situations that are not real. Both halves usually shift: wenn + hätte/wäre/könnte, then würde in the main clause.", example: "Wenn ich Zeit hätte, würde ich mehr lesen." },
-      { id: "b1_obwohl", title: "B1.3 obwohl, damit, um ... zu", rules: "obwohl concedes, damit gives a purpose with a new subject, um ... zu gives a purpose with the same subject.", example: "Ich gehe joggen, obwohl es regnet. Ich lerne, um die Prüfung zu bestehen." },
-      { id: "b1_temp", title: "B1.4 als, wenn, während, bevor, nachdem", rules: "'als' for a single past event, 'wenn' for repeated or future ones. bevor, nachdem and während order two actions in time.", example: "Als ich Kind war, wohnte ich in Bonn. Nachdem ich gegessen hatte, ging ich los." },
-      { id: "b1_plus", title: "B1.5 Plusquamperfekt", rules: "The past before the past: hatte or war plus Partizip II. It pairs naturally with 'nachdem'.", example: "Nachdem er angekommen war, rief er an." },
-      { id: "b1_futur", title: "B1.6 Futur I", rules: "werden plus infinitive expresses a future plan or a firm assumption.", example: "Ich werde nächstes Jahr nach Wien ziehen." },
-      { id: "b1_adjun", title: "B1.7 Adjektive ohne Artikel", rules: "With no article, the adjective itself carries the case signal: guter Kaffee, gute Milch, gutes Brot, guten Kaffee.", example: "Ich trinke gerne guten Kaffee mit frischer Milch." },
-      { id: "b1_ndekl", title: "B1.8 n-Deklination", rules: "A group of masculine nouns adds -n or -en in every case except the nominative singular: Junge, Kollege, Student, Mensch, Herr, Nachbar.", example: "Ich kenne den Kollegen. Ich helfe dem Studenten." },
-      { id: "b1_passiv2", title: "B1.9 Passiv in anderen Zeiten", rules: "Past passive uses wurde plus Partizip II. With a modal: muss ... werden.", example: "Das Haus wurde 1990 gebaut. Der Antrag muss unterschrieben werden." },
-      { id: "b1_indir", title: "B1.10 Indirekte Fragen", rules: "An indirect question becomes a subordinate clause. Use the W-word, or 'ob' when there is no W-word. Verb last.", example: "Ich weiß nicht, wann er kommt. Er fragt, ob wir Zeit haben." },
-      { id: "b1_partizip", title: "B1.11 Partizip als Adjektiv", rules: "Partizip I (-end) is active and ongoing; Partizip II is passive and finished. Both take normal adjective endings.", example: "das lachende Kind, das reparierte Auto" },
-      { id: "b1_konnekt", title: "B1.12 deshalb, trotzdem, außerdem", rules: "These are adverbs, not conjunctions: they occupy position 1, so the verb still comes second and the subject moves after it.", example: "Es regnet. Deshalb bleibe ich zu Hause." },
+      { id: "a1_1", title: "A1.1 Definite & Indefinite Articles", rules: "German specifies noun sets through Masculine (der/ein), Feminine (die/eine), Neuter (das/ein). Plurals carry 'die' but no baseline indefinite article.", example: "Der Mann, eine Frau, das Kind." },
+      { id: "a1_2", title: "A1.2 Personal Pronouns", rules: "Subjects: ich (I), du (you), er/sie/es (he/she/it), wir (us), ihr (you plural), sie/Sie (they/Formal).", example: "Ich bin hier. Du lernst schnell." },
+      { id: "a1_3", title: "A1.3 Sein (To Be) Conjugation", rules: "ich bin, du bist, er/sie/es ist, wir sind, ihr seid, sie/Sie sind.", example: "Wir sind in der Arena." },
+      { id: "a1_4", title: "A1.4 Regular Verb Conjugation", rules: "Drop -en and add: -e, -st, -t, -en, -t, -en.", example: "Ich spiele, du spielst, er spielt, wir spielen." },
+      { id: "a1_5", title: "A1.5 Possessive Articles", rules: "mein, dein, sein, ihr, unser, euer. Add '-e' if feminine/plural.", example: "Das ist mein Tisch. Wo ist meine Jacke?" },
+      { id: "a1_6", title: "A1.6 Modal Verbs", rules: "können (can), müssen (must), wollen (want). Infinitive goes to end of sentence.", example: "Ich kann Deutsch sprechen." },
+      { id: "a1_7", title: "A1.7 Separable Verbs", rules: "Prefix particles split off: aufstehen → Ich stehe auf.", example: "Ich stehe um 6:00 Uhr auf." },
+      { id: "a1_8", title: "A1.8 Imperative Commands", rules: "Command form drops 'du' and '-st' suffix.", example: "Komm hierher! Spiel mit mir!" },
+      { id: "a1_9", title: "A1.9 Adjective Comparison", rules: "-er for comparative, am...-sten for superlative.", example: "klein → kleiner → am kleinsten." },
+      { id: "a1_10", title: "A1.10 Present Perfect", rules: "haben/sein + Partizip II. Partizip II at end.", example: "Ich habe Deutsch gelernt. Wir sind gefahren." },
+      { id: "a1_11", title: "A1.11 Simple Past (Präteritum)", rules: "haben → hatte, sein → war.", example: "Ich hatte ein Buch. Ich war müde." },
+      { id: "a1_12", title: "A1.12 Accusative vs Dative", rules: "Akkusativ: direct object. Dativ: indirect object (dem/der/dem).", example: "Ich gebe dem Mann den Ball." }
+    ];
 
-      { id: "b2_konj1", title: "B2.1 Konjunktiv I – indirekte Rede", rules: "Reported speech in written German uses Konjunktiv I: er sagt, er sei / habe / komme. When the Konjunktiv I form looks identical to the present, German switches to Konjunktiv II (sie hätten instead of sie haben).", example: "Der Minister sagte, die Lage sei ernst und man habe bereits reagiert." },
-      { id: "b2_passersatz", title: "B2.2 Passiversatzformen", rules: "Passive meaning without werden: sich lassen (das lässt sich reparieren), sein + zu + Infinitiv (das ist zu vermeiden), and adjectives in -bar (machbar, vermeidbar).", example: "Der Fehler lässt sich leicht beheben. = Der Fehler kann leicht behoben werden." },
-      { id: "b2_nomstil", title: "B2.3 Nominalstil und Verbalstil", rules: "Formal German packs verbs into nouns: nach der Prüfung des Antrags instead of nachdem der Antrag geprüft worden ist. Being able to unpack the noun back into a clause is the B2 skill.", example: "Wegen der Verspätung des Zuges = Weil der Zug sich verspätet hat" },
-      { id: "b2_partattr", title: "B2.4 Erweiterte Partizipialattribute", rules: "A participle with its own additions sits between article and noun: der gestern veröffentlichte Bericht. Unpack it as a relative clause: der Bericht, der gestern veröffentlicht wurde.", example: "die im letzten Jahr beschlossenen Maßnahmen" },
-      { id: "b2_konnekt2", title: "B2.5 Zweiteilige Konnektoren", rules: "Paired connectors link two parts: sowohl … als auch, weder … noch, entweder … oder, nicht nur … sondern auch, je … desto. After je + comparative the verb goes last; after desto it comes second.", example: "Je länger die Debatte dauert, desto weniger hört man einander zu." },
-      { id: "b2_konzessiv", title: "B2.6 Konzessive Verbindungen", rules: "Concession has three shapes: obwohl + verb last, zwar … aber (both main clauses), and trotzdem as an adverb in position 1 with the verb second.", example: "Zwar ist das Verfahren teuer, aber es ist sicher. Obwohl es teuer ist, wird es genutzt." },
-      { id: "b2_final", title: "B2.7 Finalsätze: damit und um … zu", rules: "Purpose clauses: um … zu only when both clauses share a subject; damit whenever the subjects differ.", example: "Ich rufe an, um den Termin zu verschieben. Ich rufe an, damit du Bescheid weißt." },
-      { id: "b2_modalsubj", title: "B2.8 Modalverben subjektiv", rules: "Modals also express how sure the speaker is: er muss krank sein (I am almost certain), er dürfte krank sein (probably), er könnte krank sein (possibly), er will krank gewesen sein (he claims).", example: "Sie müsste inzwischen angekommen sein." },
-      { id: "b2_konj2verg", title: "B2.9 Konjunktiv II der Vergangenheit", rules: "For an unreal past, use hätte or wäre plus Partizip II. With a modal, the modal appears as an infinitive at the end: hätte kommen können.", example: "Wenn ich das gewusst hätte, hätte ich früher reagieren können." },
-      { id: "b2_genprep", title: "B2.10 Präpositionen mit Genitiv", rules: "Formal registers use trotz, wegen, während, aufgrund, angesichts, innerhalb, anstatt with the genitive: trotz des Regens, aufgrund der Lage.", example: "Angesichts der hohen Kosten wurde das Projekt verschoben." },
-      { id: "b2_nvv", title: "B2.11 Nomen-Verb-Verbindungen", rules: "Fixed noun plus verb pairs carry the meaning together: in Anspruch nehmen, zur Verfügung stehen, in Frage kommen, Rücksicht nehmen, eine Entscheidung treffen.", example: "Die Unterlagen stehen ab Montag zur Verfügung." },
-      { id: "b2_relwas", title: "B2.12 Relativsätze mit was und wo(r)-", rules: "Use was after das, alles, nichts, etwas, viel and after a whole clause. With a preposition it becomes wo(r)-: worüber, wofür, womit.", example: "Das ist alles, was ich weiß. Er kam zu spät, was niemanden überraschte." }
+    const a2GrammarDatabase = [
+      { id: "a2_1", title: "A2.1 Nebensatz mit 'weil'", rules: "'weil' gives a reason. Verb goes to the END of the clause.", example: "Ich bleibe zu Hause, weil ich krank bin." },
+      { id: "a2_2", title: "A2.2 Nebensatz mit 'dass'", rules: "'dass' reports a thought. Verb also goes to the END.", example: "Ich glaube, dass er heute kommt." },
+      { id: "a2_3", title: "A2.3 Nebensatz mit 'wenn'", rules: "'wenn' means 'if' or 'whenever'. Verb last in wenn-clause.", example: "Wenn es regnet, bleibe ich zu Hause." },
+      { id: "a2_4", title: "A2.4 Perfekt vs Präteritum", rules: "Spoken: Perfekt (habe/bin + Partizip II). Written: Präteritum for sein/haben/modals.", example: "Gestern war ich müde. Ich habe lange geschlafen." },
+      { id: "a2_5", title: "A2.5 Wechselpräpositionen", rules: "in, an, auf, über, unter take Akkusativ (movement) or Dativ (position).", example: "Ich gehe in die Küche. Ich bin in der Küche." },
+      { id: "a2_6", title: "A2.6 Reflexive Verben", rules: "Verb + reflexive pronoun: mich, dich, sich, uns, euch, sich.", example: "Ich freue mich. Wir treffen uns." },
+      { id: "a2_7", title: "A2.7 Adjektivendungen", rules: "After definite article: -e (nom), -en (acc/dat/gen). After ein: similar pattern.", example: "der große Mann, den großen Mann" },
+      { id: "a2_8", title: "A2.8 Komparativ vor dem Nomen", rules: "Comparative before noun still needs adjective ending.", example: "Ich suche eine größere Wohnung." },
+      { id: "a2_9", title: "A2.9 Konjunktiv II für höfliche Bitten", rules: "würde, könnte, hätte, wäre make requests polite.", example: "Könnten Sie mir bitte helfen?" },
+      { id: "a2_10", title: "A2.10 Passiv Präsens", rules: "werden + Partizip II. Puts action, not doer, in focus.", example: "Das Formular wird hier ausgefüllt." },
+      { id: "a2_11", title: "A2.11 Genitiv", rules: "Shows possession: des/eines + -s (m/n), der/einer (f/pl).", example: "das Auto des Mannes" },
+      { id: "a2_12", title: "A2.12 Verben mit Präposition", rules: "Many verbs pair with one preposition and case. Learn as pairs.", example: "warten auf + Akk, freuen auf + Akk" }
+    ];
+
+    const b1GrammarDatabase = [
+      { id: "b1_1", title: "B1.1 Relativsätze", rules: "Relative clause describes a noun. Pronoun takes gender/number from noun, case from own clause. Verb last.", example: "Der Mann, der dort steht, ist mein Chef." },
+      { id: "b1_2", title: "B1.2 Irreale Bedingungen", rules: "Konjunktiv II for unreal situations. wenn + hätte/wäre, then würde in main.", example: "Wenn ich Zeit hätte, würde ich mehr lesen." },
+      { id: "b1_3", title: "B1.3 obwohl, damit, um...zu", rules: "obwohl = concession. damit = purpose (different subjects). um...zu = purpose (same subject).", example: "Ich gehe joggen, obwohl es regnet." },
+      { id: "b1_4", title: "B1.4 Temporale Sätze", rules: "als (single past event), wenn (repeated), während (simultaneous), nachdem, bevor.", example: "Als ich Kind war... Nachdem ich gegessen hatte..." },
+      { id: "b1_5", title: "B1.5 Plusquamperfekt", rules: "Past before past: hatte/war + Partizip II. Pairs with 'nachdem'.", example: "Nachdem er angekommen war, rief er an." },
+      { id: "b1_6", title: "B1.6 Futur I", rules: "werden + infinitive for future plans or firm assumptions.", example: "Ich werde nächstes Jahr nach Wien ziehen." },
+      { id: "b1_7", title: "B1.7 Adjektive ohne Artikel", rules: "With no article, adjective carries case signal: guter Kaffee, gute Milch.", example: "Ich trinke gerne guten Kaffee mit frischer Milch." },
+      { id: "b1_8", title: "B1.8 n-Deklination", rules: "Masculine nouns add -n/-en except nominative singular: Junge, Kollege, Student, Mensch.", example: "Ich kenne den Kollegen." },
+      { id: "b1_9", title: "B1.9 Passiv in anderen Zeiten", rules: "Past passive: wurde + Partizip II. With modal: muss...werden.", example: "Das Haus wurde 1990 gebaut." },
+      { id: "b1_10", title: "B1.10 Indirekte Fragen", rules: "Subordinate clause with W-word or 'ob'. Verb last.", example: "Ich weiß nicht, wann er kommt." },
+      { id: "b1_11", title: "B1.11 Partizip als Adjektiv", rules: "Partizip I (-end) = active/ongoing. Partizip II = passive/finished. Take adjective endings.", example: "das lachende Kind, das reparierte Auto" },
+      { id: "b1_12", title: "B1.12 Adverbien: deshalb, trotzdem, außerdem", rules: "Position 1 → verb 2nd, subject after verb. Not conjunctions!", example: "Es regnet. Deshalb bleibe ich zu Hause." }
+    ];
+
+    const b2GrammarDatabase = [
+      { id: "b2_1", title: "B2.1 Konjunktiv I – indirekte Rede", rules: "Reported speech: er sagt, er sei/habe/komme. If identical to present, switch to Konjunktiv II.", example: "Der Minister sagte, die Lage sei ernst." },
+      { id: "b2_2", title: "B2.2 Passiversatzformen", rules: "sich lassen (lässt sich reparieren), sein + zu + Infinitiv, adjectives in -bar.", example: "Der Fehler lässt sich leicht beheben." },
+      { id: "b2_3", title: "B2.3 Nominalstil vs Verbalstil", rules: "Formal: pack verbs into nouns. Unpack nominalized forms back into clauses.", example: "Wegen der Verspätung = Weil der Zug sich verspätet hat" },
+      { id: "b2_4", title: "B2.4 Erweiterte Partizipialattribute", rules: "Participle with additions between article and noun. Unpack as relative clause.", example: "die im letzten Jahr beschlossenen Maßnahmen" },
+      { id: "b2_5", title: "B2.5 Zweiteilige Konnektoren", rules: "sowohl...als auch, weder...noch, entweder...oder, je...desto.", example: "Je länger die Debatte, desto weniger hört man zu." },
+      { id: "b2_6", title: "B2.6 Konzessive Verbindungen", rules: "obwohl + verb last, zwar...aber (both main), trotzdem (adverb, verb 2nd).", example: "Obwohl es teuer ist, wird es genutzt." },
+      { id: "b2_7", title: "B2.7 Finalsätze: damit, um...zu", rules: "um...zu only same subject; damit for different subjects.", example: "Ich rufe an, um Bescheid zu sagen. / Ich rufe an, damit du es weißt." },
+      { id: "b2_8", title: "B2.8 Modalverben subjektiv", rules: "Express speaker's certainty: muss (almost certain), könnte (possibly), will (claims).", example: "Sie müsste inzwischen angekommen sein." },
+      { id: "b2_9", title: "B2.9 Konjunktiv II der Vergangenheit", rules: "Unreal past: hätte/wäre + Partizip II. With modal: modal as infinitive at end.", example: "Wenn ich das gewusst hätte, hätte ich reagieren können." },
+      { id: "b2_10", title: "B2.10 Präpositionen mit Genitiv", rules: "trotz, wegen, während, aufgrund, angesichts, innerhalb + genitive.", example: "Trotz des Regens" },
+      { id: "b2_11", title: "B2.11 Nomen-Verb-Verbindungen", rules: "Fixed pairs: in Anspruch nehmen, zur Verfügung stehen, eine Entscheidung treffen.", example: "Die Unterlagen stehen ab Montag zur Verfügung." },
+      { id: "b2_12", title: "B2.12 Relativsätze mit was, wo(r)-", rules: "was after das/alles/nichts. With preposition: wo(r)-prefix (worüber, wofür).", example: "Das ist alles, was ich weiß." }
     ];
 
     // Comprehensive A1 Skills Laboratory Array Matrix
@@ -4061,20 +4068,18 @@ function canAccessGrammarItem(grammarId) {
   let userTier = localStorage.getItem('sb_user_tier') || 'free';
   const level = getGrammarItemLevel(grammarId);
   
-  // Allow viewing grammar topics for the current active level
-  if (level === activeLevel) {
-    return true;
-  }
-  
+  // Free users: only A1
   if (userTier === 'free') {
     return level === 'A1';
   }
   
+  // Starter users: A1-A2
   if (userTier === 'starter') {
     return level === 'A1' || level === 'A2';
   }
   
-  return true; // PRO can access all
+  // PRO users: All levels (A1-C2)
+  return true;
 }
 
 function onGrammarItemClick(grammarId, grammarTitle) {
@@ -7297,51 +7302,61 @@ return;
       else if (activeTab === 'grammar') {
         let structuralAccordionHTML = '';
         
-        // Get the correct grammar database based on active level
-        let grammarDB = a1GrammarDatabase;
-        if (activeLevel === 'A2') grammarDB = a2GrammarDatabase;
-        else if (activeLevel === 'B1') grammarDB = b1GrammarDatabase;
-        else if (activeLevel === 'B2') grammarDB = b2GrammarDatabase;
-        else if (activeLevel === 'C1') grammarDB = c1GrammarDatabase;
-        else if (activeLevel === 'C2') grammarDB = c2GrammarDatabase;
+        // Array of all grammar databases with their levels
+        const allDatabases = [
+          { level: 'A1', db: a1GrammarDatabase },
+          { level: 'A2', db: a2GrammarDatabase },
+          { level: 'B1', db: b1GrammarDatabase },
+          { level: 'B2', db: b2GrammarDatabase },
+          { level: 'C1', db: c1GrammarDatabase },
+          { level: 'C2', db: c2GrammarDatabase }
+        ];
         
-        grammarDB.forEach((item, idx) => {
-          const isOpen = (idx === activeGrammarIndex);
-          const isLocked = !canAccessGrammarItem(item.id);
+        let itemIndex = 0;
+        
+        allDatabases.forEach(({ level, db }) => {
+          // Add level header
+          structuralAccordionHTML += `<div class="mt-4 mb-2"><span class="text-xs font-black text-indigo-500 uppercase tracking-wider">${level}</span></div>`;
           
-          structuralAccordionHTML += `
-            <div class="border border-slate-800 rounded-xl overflow-hidden ${isOpen ? 'bg-slate-950/40' : 'bg-slate-950/10'} ${isLocked ? 'opacity-50' : ''}">
-              <button onclick="activeGrammarIndex=${idx}; renderActiveTabModule();" 
-                      class="w-full text-left p-3.5 text-xs font-black flex justify-between items-center transition-colors bg-slate-950 border-b border-slate-800/60 text-slate-200" 
-                      ${isLocked ? 'disabled' : ''}>
-                <span>${isLocked ? '🔒 ' : ''}${item.title}</span>
-                <span>${isOpen ? '▼' : '▶'}</span>
-              </button>
-              ${isOpen && !isLocked ? `
-                <div class="p-4 space-y-3 bg-slate-900/40">
-                  <div>
-                    <span class="text-[9px] uppercase tracking-wider font-extrabold text-indigo-400 block mb-0.5">Rules</span>
-                    <p class="text-xs font-medium leading-relaxed text-slate-300">${item.rules}</p>
+          db.forEach((item) => {
+            const isOpen = (itemIndex === activeGrammarIndex);
+            const isLocked = !canAccessGrammarItem(item.id);
+            
+            structuralAccordionHTML += `
+              <div class="border border-slate-800 rounded-xl overflow-hidden ${isOpen ? 'bg-slate-950/40' : 'bg-slate-950/10'} ${isLocked ? 'opacity-50' : ''}">
+                <button onclick="activeGrammarIndex=${itemIndex}; renderActiveTabModule();" 
+                        class="w-full text-left p-3.5 text-xs font-black flex justify-between items-center transition-colors bg-slate-950 border-b border-slate-800/60 text-slate-200" 
+                        ${isLocked ? 'disabled' : ''}>
+                  <span>${isLocked ? '🔒 ' : ''}${item.title}</span>
+                  <span>${isOpen ? '▼' : '▶'}</span>
+                </button>
+                ${isOpen && !isLocked ? `
+                  <div class="p-4 space-y-3 bg-slate-900/40">
+                    <div>
+                      <span class="text-[9px] uppercase tracking-wider font-extrabold text-indigo-400 block mb-0.5">Rules</span>
+                      <p class="text-xs font-medium leading-relaxed text-slate-300">${item.rules}</p>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-950 border border-slate-800/80">
+                      <span class="text-[9px] uppercase tracking-wider font-extrabold text-emerald-400 block mb-0.5">Example</span>
+                      <p class="text-xs font-mono font-bold text-emerald-300 leading-snug">${item.example}</p>
+                    </div>
                   </div>
-                  <div class="p-3 rounded-xl bg-slate-950 border border-slate-800/80">
-                    <span class="text-[9px] uppercase tracking-wider font-extrabold text-emerald-400 block mb-0.5">Example</span>
-                    <p class="text-xs font-mono font-bold text-emerald-300 leading-snug">${item.example}</p>
+                ` : (isOpen && isLocked ? `
+                  <div class="p-4 bg-slate-900/40 text-center">
+                    <p class="text-xs text-slate-400">🔒 Locked - Upgrade to access</p>
                   </div>
-                </div>
-              ` : (isOpen && isLocked ? `
-                <div class="p-4 bg-slate-900/40 text-center">
-                  <p class="text-xs text-slate-400">🔒 Locked - Upgrade to access</p>
-                </div>
-              ` : '')}
-            </div>
-          `;
+                ` : '')}
+              </div>
+            `;
+            itemIndex++;
+          });
         });
 
         container.innerHTML = `
           <div class="space-y-3">
             <div class="px-1">
-              <h3 class="text-sm font-black text-white">Grammar Topics (${activeLevel})</h3>
-              <p class="text-[10px] text-slate-400 mt-0.5">${grammarDB.length} topics for level ${activeLevel}</p>
+              <h3 class="text-sm font-black text-white">Grammar Topics (A1-C2)</h3>
+              <p class="text-[10px] text-slate-400 mt-0.5">All levels - C1 & C2 require subscription</p>
             </div>
             <div class="space-y-2">${structuralAccordionHTML}</div>
           </div>
