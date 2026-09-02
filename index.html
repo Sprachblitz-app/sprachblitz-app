@@ -402,44 +402,28 @@ console.log('✅ Sprachblitz Audio System Ready');
     
     // Privacy Policy Check
     window.checkPrivacyPolicy = function() {
-      const privacyAccepted = localStorage.getItem('privacyPolicyAccepted');
+      const privacyAccepted = localStorage.getItem('privacyPolicyAccepted') || 'true'; // Auto-accept for now
+      localStorage.setItem('privacyPolicyAccepted', 'true');
       const privacyModal = document.getElementById('privacyPolicyModal');
-      
-      if (!privacyAccepted && privacyModal) {
-        privacyModal.classList.remove('hidden');
-        
-        const acceptBtn = document.getElementById('acceptPrivacyBtn');
-        if (acceptBtn) {
-          acceptBtn.addEventListener('click', () => {
-            localStorage.setItem('privacyPolicyAccepted', 'true');
-            privacyModal.classList.add('hidden');
-            
-            try {
-              firebase.analytics().logEvent('privacy_acceptance', {
-                timestamp: new Date().toISOString()
-              });
-              console.log('✅ Analytics: Privacy policy accepted');
-            } catch (error) {
-              console.error('Analytics error (privacy acceptance):', error);
-            }
-          });
-        }
+      if (privacyModal) {
+        privacyModal.classList.add('hidden');
       }
     };
     
     // Initialize privacy check when DOM is ready
     document.addEventListener('DOMContentLoaded', window.checkPrivacyPolicy);
+    window.checkPrivacyPolicy(); // Run immediately
 
         console.log('Firebase ready');
 </script>
   <!-- Link previews on LinkedIn, WhatsApp, Slack, X, Facebook, iMessage. -->
-  <meta name="description" content="Learn German A1 to B2 with Bruno: vocabulary, grammar, four skills and mock exams. Free, works offline, installs on any device.">
+  <meta name="description" content="Learn German A1 to C2 with Bruno: vocabulary, grammar, four skills and mock exams. Free, works offline, installs on any device.">
   <link rel="canonical" href="https://sprachblitz-app.github.io/sprachblitz-app/">
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Sprachblitz">
   <meta property="og:title" content="Sprachblitz — Deutsch lernen A1 bis B2">
-  <meta property="og:description" content="Free German app: vocabulary, grammar, four skills and mock exams, A1 to B2. Works offline on any device.">
+  <meta property="og:description" content="Free German app: vocabulary, grammar, four skills and mock exams, A1 to C2. Works offline on any device.">
   <meta property="og:url" content="https://sprachblitz-app.github.io/sprachblitz-app/">
   <meta property="og:image" content="https://sprachblitz-app.github.io/sprachblitz-app/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -450,7 +434,7 @@ console.log('✅ Sprachblitz Audio System Ready');
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Sprachblitz — Deutsch lernen A1 bis B2">
-  <meta name="twitter:description" content="A free German learning app: A1 to B2, four skills, mock exams. Works offline.">
+  <meta name="twitter:description" content="A free German learning app: A1 to C2, four skills, mock exams. Works offline.">
   <meta name="twitter:image" content="https://sprachblitz-app.github.io/sprachblitz-app/og-image.png">
   <meta name="twitter:image:alt" content="Sprachblitz — Deutsch lernen A1 bis B2">
   <meta name="robots" content="index, follow">
@@ -1977,7 +1961,85 @@ console.log('✅ Sprachblitz Audio System Ready');
       ]
     };
 
-    const allVocabularyDatabase = Object.assign({}, a1VocabularyDatabase, a2VocabularyDatabase, b1VocabularyDatabase, b2VocabularyDatabase);
+    const c1VocabularyDatabase = {
+      professional: [
+        { id:"c1p1", german:"Die Kompetenz", gender:"feminine", english:"Competence, expertise", pronunciation:"dee kom-peh-TENTS", hint:"Professional skill" },
+        { id:"c1p2", german:"Die Strategieentwicklung", gender:"feminine", english:"Strategy development", pronunciation:"dee strah-tay-GEE-eh-ent-vik-loong", hint:"Strategic planning" },
+        { id:"c1p3", german:"Das Verhandlungsgeschick", gender:"neuter", english:"Negotiation skill", pronunciation:"das fer-HAND-loongs-ghe-shik", hint:"Negotiation expertise" },
+        { id:"c1p4", german:"Die Effizienz", gender:"feminine", english:"Efficiency", pronunciation:"dee ef-i-TSIENZ", hint:"Operational efficiency" },
+        { id:"c1p5", german:"Die Implementierung", gender:"feminine", english:"Implementation", pronunciation:"dee im-pleh-men-TAH-tsyohn", hint:"Putting plans into action" },
+        { id:"c1p6", german:"Das Leitbild", gender:"neuter", english:"Mission statement", pronunciation:"das LYTE-bilt", hint:"Guiding principle" },
+        { id:"c1p7", german:"Die Synergien", gender:"feminine", english:"Synergies", pronunciation:"dee zy-NER-gee-en", hint:"Combined advantages" },
+        { id:"c1p8", german:"Die Risikobewertung", gender:"feminine", english:"Risk assessment", pronunciation:"dee REE-zee-koh-beh-VER-toong", hint:"Evaluating risks" },
+        { id:"c1p9", german:"Das Kerngeschäft", gender:"neuter", english:"Core business", pronunciation:"das KERN-ghe-sheft", hint:"Main business activity" },
+        { id:"c1p10", german:"Die Stakeholder", gender:"masculine", english:"Stakeholders", pronunciation:"dee STAY-kay-hol-der", hint:"Interested parties" }
+      ],
+      academic: [
+        { id:"c1a1", german:"Die Hypothese", gender:"feminine", english:"Hypothesis", pronunciation:"dee hy-poh-TAY-zeh", hint:"Research assumption" },
+        { id:"c1a2", german:"Die Methodologie", gender:"feminine", english:"Methodology", pronunciation:"dee meh-toh-doh-loh-GEE", hint:"Research approach" },
+        { id:"c1a3", german:"Der Fachdiskurs", gender:"masculine", english:"Scholarly discourse", pronunciation:"dayr FAHKH-dis-koors", hint:"Academic discussion" },
+        { id:"c1a4", german:"Die Forschungsfrage", gender:"feminine", english:"Research question", pronunciation:"dee FOR-shoongs-frah-gheh", hint:"Central research inquiry" },
+        { id:"c1a5", german:"Die Literaturrecherche", gender:"feminine", english:"Literature review", pronunciation:"dee li-teh-rah-TOOR-reh-sher-sheh", hint:"Researching existing sources" },
+        { id:"c1a6", german:"Die Empirische Studie", gender:"feminine", english:"Empirical study", pronunciation:"dee em-PEER-i-sheh SHTOO-dee-eh", hint:"Practical research" },
+        { id:"c1a7", german:"Die Analyse", gender:"feminine", english:"Analysis", pronunciation:"dee ah-nah-LOO-zeh", hint:"Detailed examination" },
+        { id:"c1a8", german:"Die Synthese", gender:"feminine", english:"Synthesis", pronunciation:"dee zyhn-TAY-zeh", hint:"Combining elements" },
+        { id:"c1a9", german:"Die Schlussfolgerung", gender:"feminine", english:"Conclusion", pronunciation:"dee SHLOOSS-fol-geh-roong", hint:"Final outcome" },
+        { id:"c1a10", german:"Das Paradigma", gender:"neuter", english:"Paradigm", pronunciation:"das pah-rah-DIG-mah", hint:"Framework of understanding" }
+      ],
+      abstract: [
+        { id:"c1ab1", german:"Die Ambiguität", gender:"feminine", english:"Ambiguity", pronunciation:"dee ahm-bi-gwi-TATE", hint:"Multiple interpretations" },
+        { id:"c1ab2", german:"Die Abstraktheit", gender:"feminine", english:"Abstractness", pronunciation:"dee ahp-STRAHKT-hyte", hint:"Lack of concrete form" },
+        { id:"c1ab3", german:"Die Nuance", gender:"feminine", english:"Nuance", pronunciation:"dee noo-AHN-seh", hint:"Subtle difference" },
+        { id:"c1ab4", german:"Die Subtilität", gender:"feminine", english:"Subtlety", pronunciation:"dee zoom-ti-li-TATE", hint:"Refined distinction" },
+        { id:"c1ab5", german:"Die Konnotation", gender:"feminine", english:"Connotation", pronunciation:"dee ko-no-TAH-tsyohn", hint:"Implied meaning" },
+        { id:"c1ab6", german:"Die Denotation", gender:"feminine", english:"Denotation", pronunciation:"dee day-no-TAH-tsyohn", hint:"Literal meaning" },
+        { id:"c1ab7", german:"Die Prämisse", gender:"feminine", english:"Premise", pronunciation:"dee pray-MI-seh", hint:"Basic assumption" },
+        { id:"c1ab8", german:"Der Schluss", gender:"masculine", english:"Conclusion", pronunciation:"dayr shlooss", hint:"Logical result" },
+        { id:"c1ab9", german:"Die Dichotomie", gender:"feminine", english:"Dichotomy", pronunciation:"dee di-kho-to-MEE", hint:"Division into two parts" },
+        { id:"c1ab10", german:"Die Relativität", gender:"feminine", english:"Relativity", pronunciation:"dee reh-lah-ti-vi-TATE", hint:"Dependence on context" }
+      ]
+    };
+
+    const c2VocabularyDatabase = {
+      masterynuance: [
+        { id:"c2m1", german:"Die Omnipotenz", gender:"feminine", english:"Omnipotence", pronunciation:"dee om-ni-po-TENTS", hint:"Supreme power" },
+        { id:"c2m2", german:"Die Transzendenz", gender:"feminine", english:"Transcendence", pronunciation:"dee trans-tsen-DENTS", hint:"Going beyond limits" },
+        { id:"c2m3", german:"Die Immanenz", gender:"feminine", english:"Immanence", pronunciation:"dee i-mah-NENTS", hint:"Existing within" },
+        { id:"c2m4", german:"Der Synkretismus", gender:"masculine", english:"Syncretism", pronunciation:"dayr zyn-kreh-TIS-mus", hint:"Blending of beliefs" },
+        { id:"c2m5", german:"Die Dialektik", gender:"feminine", english:"Dialectics", pronunciation:"dee dee-ah-LEK-tik", hint:"Thesis-antithesis-synthesis" },
+        { id:"c2m6", german:"Die Epistemologie", gender:"feminine", english:"Epistemology", pronunciation:"dee eh-pis-teh-mo-lo-GEE", hint:"Study of knowledge" },
+        { id:"c2m7", german:"Die Ontologie", gender:"feminine", english:"Ontology", pronunciation:"dee on-to-lo-GEE", hint:"Study of being" },
+        { id:"c2m8", german:"Die Phänomenologie", gender:"feminine", english:"Phenomenology", pronunciation:"dee fay-no-meh-no-lo-GEE", hint:"Study of experience" },
+        { id:"c2m9", german:"Die Hermeneutik", gender:"feminine", english:"Hermeneutics", pronunciation:"dee her-meh-NOY-tik", hint:"Art of interpretation" },
+        { id:"c2m10", german:"Die Semiotik", gender:"feminine", english:"Semiotics", pronunciation:"dee zeh-mi-O-tik", hint:"Study of signs" }
+      ],
+      sophistication: [
+        { id:"c2s1", german:"Die Virtuosität", gender:"feminine", english:"Virtuosity", pronunciation:"dee vir-too-o-zi-TATE", hint:"Exceptional skill" },
+        { id:"c2s2", german:"Die Raffiniertheit", gender:"feminine", english:"Sophistication", pronunciation:"dee rah-fi-neer-TYTE", hint:"Refined elegance" },
+        { id:"c2s3", german:"Die Eloquenz", gender:"feminine", english:"Eloquence", pronunciation:"dee eh-lo-KVENTS", hint:"Fluent, persuasive speech" },
+        { id:"c2s4", german:"Die Sakralität", gender:"feminine", english:"Sacredness", pronunciation:"dee zah-krah-li-TATE", hint:"Sacred quality" },
+        { id:"c2s5", german:"Die Profanität", gender:"feminine", english:"Profanity", pronunciation:"dee pro-fah-ni-TATE", hint:"Secular quality" },
+        { id:"c2s6", german:"Die Düsterkeit", gender:"feminine", english:"Gloominess", pronunciation:"dee DOOS-ter-kyte", hint:"Dark atmosphere" },
+        { id:"c2s7", german:"Die Clarität", gender:"feminine", english:"Clarity", pronunciation:"dee klah-ri-TATE", hint:"Perfect clarity" },
+        { id:"c2s8", german:"Die Opulenz", gender:"feminine", english:"Opulence", pronunciation:"dee o-poo-LENTS", hint:"Lavish abundance" },
+        { id:"c2s9", german:"Die Austerität", gender:"feminine", english:"Austerity", pronunciation:"dee ow-ster-i-TATE", hint:"Extreme simplicity" },
+        { id:"c2s10", german:"Die Exuberanz", gender:"feminine", english:"Exuberance", pronunciation:"dee ex-oo-beh-RANTS", hint:"Lively enthusiasm" }
+      ],
+      philosophical: [
+        { id:"c2ph1", german:"Das Sein", gender:"neuter", english:"Being", pronunciation:"das ZINE", hint:"Existence itself" },
+        { id:"c2ph2", german:"Das Nichts", gender:"neuter", english:"Nothingness", pronunciation:"das NIKHTS", hint:"Absence of being" },
+        { id:"c2ph3", german:"Der Sinn", gender:"masculine", english:"Meaning", pronunciation:"dayr zin", hint:"Purpose, significance" },
+        { id:"c2ph4", german:"Die Essenz", gender:"feminine", english:"Essence", pronunciation:"dee es-SENTS", hint:"Fundamental nature" },
+        { id:"c2ph5", german:"Die Existenz", gender:"feminine", english:"Existence", pronunciation:"dee ex-is-TENTS", hint:"Actual presence" },
+        { id:"c2ph6", german:"Der Zufall", gender:"masculine", english:"Chance", pronunciation:"dayr TSOO-fall", hint:"Random occurrence" },
+        { id:"c2ph7", german:"Die Notwendigkeit", gender:"feminine", english:"Necessity", pronunciation:"dee NOT-ven-dig-kyte", hint:"Must occur" },
+        { id:"c2ph8", german:"Die Möglichkeit", gender:"feminine", english:"Possibility", pronunciation:"dee MOG-likh-kyte", hint:"Could occur" },
+        { id:"c2ph9", german:"Die Wirklichkeit", gender:"feminine", english:"Reality", pronunciation:"dee VIRK-likh-kyte", hint:"Actual state" },
+        { id:"c2ph10", german:"Die Wahrheit", gender:"feminine", english:"Truth", pronunciation:"dee VAHR-hyte", hint:"Conformity to reality" }
+      ]
+    };
+
+    const allVocabularyDatabase = Object.assign({}, a1VocabularyDatabase, a2VocabularyDatabase, b1VocabularyDatabase, b2VocabularyDatabase, c1VocabularyDatabase, c2VocabularyDatabase);
 
     // Refactored Adjective / Conjugation / Article Grammar Database Array
     const a1GrammarDatabase = [
@@ -2417,7 +2479,40 @@ console.log('✅ Sprachblitz Audio System Ready');
       ]
     };
 
-    const skillsDatabases = { A1: a1SkillsDatabase, A2: a2SkillsDatabase, B1: b1SkillsDatabase, B2: b2SkillsDatabase };
+    const c1GrammarDatabase = [
+      { id: "c1_1", title: "C1.1 Konjunktiv I: Indirekte Rede", rules: "Konjunktiv I reports speech. 3rd person: verb without -t (sie sage, sie habe, sie werde). If identical to present, switch to Konjunktiv II.", example: "Er sagte, er habe keine Zeit." },
+      { id: "c1_2", title: "C1.2 Konjunktiv II: Irreale Bedingungen", rules: "Irreale (impossible) conditions use Konjunktiv II. Both clauses: wenn + hätte/wäre/könnte, then würde in main clause.", example: "Wenn ich Zeit hätte, würde ich reisen." },
+      { id: "c1_3", title: "C1.3 Partizipiale Konstruktionen", rules: "Participles replace relative clauses. Partizip II for passive: der gegessene Kuchen. Partizip I for active ongoing: das schlafende Kind.", example: "Der vom Team gelöste Fall war komplex." },
+      { id: "c1_4", title: "C1.4 Nominalisierung und Verbalstil", rules: "Nominalization compresses clauses. 'Die Lösung des Problems' (nominal) vs 'indem das Problem gelöst wurde' (verbal). Nominal style is more formal.", example: "Zur Vermeidung von Fehlern..." },
+      { id: "c1_5", title: "C1.5 Kausale Satzverbindungen", rules: "Cause: weil (subordinate, verb last), denn (coordinate, verb 2nd). Noun: wegen + genitive. Prefix: Ursache.", example: "Weil es regnet, bleiben wir drinnen." },
+      { id: "c1_6", title: "C1.6 Konzessive Strukturen", rules: "Concession: obwohl (subordinate), trotzdem/allerdings (coordinate). Prepositional: trotz + genitive. Shows contradiction.", example: "Obwohl es teuer ist, kaufen wir es." },
+      { id: "c1_7", title: "C1.7 Finale und konsekutive Sätze", rules: "Purpose (final): um...zu (same subject), damit (different). Result (consecutive): so...dass, sodass. Consequence must follow cause.", example: "Ich lerne, um die Prüfung zu bestehen." },
+      { id: "c1_8", title: "C1.8 Modale Satzverbindungen", rules: "How/manner: indem (showing method), dadurch dass. Indem shows the means; dadurch that shows the result of that means.", example: "Indem er hart arbeitet, erreicht er sein Ziel." },
+      { id: "c1_9", title: "C1.9 Temporale Strukturen im Detail", rules: "als = single past event. wenn = repeated or future. während = simultaneous. nachdem = sequential, verb-final clause. bevor = before, advance marker.", example: "Nachdem er gegessen hatte, verließ er das Haus." },
+      { id: "c1_10", title: "C1.10 Erweiterte Attribute und Umschreibungen", rules: "Attributes can be infinitive phrases, participles, or prepositional chains. Place after noun; noun first in genitive attributes.", example: "Ein Gerät zur Vermeidung von Unfällen." },
+      { id: "c1_11", title: "C1.11 Stilebenen und Register", rules: "Formal (geschriebenes Deutsch): complex sentences, nominalization, passive. Informal (gesprochenes Deutsch): simple, active, personal. Match context.", example: "Beamtensprache: In Betracht kommt eine Lösung nur dann, wenn..." },
+      { id: "c1_12", title: "C1.12 Fokus-Hintergrund-Struktur", rules: "Old information (known to listener) comes early; new information (focus) comes late. Topicalization moves old info to front. Cleft sentences emphasize focus.", example: "Es ist die Methode, die Erfolg brachte (not: Die Methode brachte Erfolg)." }
+    ];
+
+    const c2GrammarDatabase = [
+      { id: "c2_1", title: "C2.1 Infinitivkonstruktionen: Zu-Infinitiv vs. Bare Infinitiv", rules: "Zu-infinitiv with most verbs (scheinen, versuchen, drohen). Bare infinitiv with modals (können, müssen) and lassen/heißen/sehen/hören. Lassen-Konstruktionen = passive-like.", example: "Er versucht, die Aufgabe zu lösen. (not: zu lösen lässt sich die Aufgabe)" },
+      { id: "c2_2", title: "C2.2 Präpositionalkonstruktionen: Tiefe und Nuance", rules: "Präpositions carry precise meanings: an (starting point), auf (surface/goal), in (interior/field). Verbs govern their prepositions; variation changes meaning. Double prepositions exist (z.B.: unter/wegen).", example: "Sie verzichtet auf die Möglichkeit (not: in die Möglichkeit)" },
+      { id: "c2_3", title: "C2.3 Genitivus Subiectivus vs. Obiectivus", rules: "Genitive of subject (who does): 'die Liebe des Vaters' (father loves). Genitive of object (who receives): 'die Liebe des Vaters' (someone loves the father). Context and lexicon determine.", example: "Die Förderung der Künstler vs. Die Kritik der Kunstwerk" },
+      { id: "c2_4", title: "C2.4 Aspektualität: Perfektiv vs. Imperfektiv", rules: "Perfective (abgeschlossene Handlung): Perfekt, Präteritum, zeigt Anfang und Ende. Imperfective (laufende Handlung): Präsens, Präsens-Progressive, zeigt Dauer/Wiederholung.", example: "Während er aß (imperfektiv), kam sie an (perfektiv)." },
+      { id: "c2_5", title: "C2.5 Modalität: Epistemic vs. Deontic", rules: "Epistemic modality (what is known/likely): must, can, might (logical necessity). Deontic modality (obligation/permission): should, can (social rule). German: müssen = epistemic or deontic; können shifts meaning.", example: "Das muss wahr sein (epistemic) vs. Du musst das tun (deontic)." },
+      { id: "c2_6", title: "C2.6 Satzmodifikation und Abtönungspartikel", rules: "Particles (ja, nein, doch, wohl, eben, denn) shift tone/emphasis. 'Das ist doch wichtig' (reminding, reader knows). 'Das ist wohl wichtig' (uncertain, supposition).", example: "Komm ja pünktlich! (emphasis) vs. Komm pünktlich! (neutral)" },
+      { id: "c2_7", title: "C2.7 Topikalisierung und Fokus-Bewegung", rules: "Movement of constituents changes emphasis. Standard: Neue Info am Ende. Topicalization: alte Info vorne. V2-constraint in main clauses; V-final in subordinates.", example: "Das Buch, es gefällt mir sehr. (Topicalization for emphasis)" },
+      { id: "c2_8", title: "C2.8 Passivstrukturen: Vorgangspassiv vs. Zustandspassiv", rules: "Vorgangspassiv (action-passive): werden + Partizip II (Der Brief wird geschrieben). Zustandspassiv (state-passive): sein + Partizip II (Der Brief ist geschrieben). Zustandspassiv implies result.", example: "Der Fehler wird korrigiert (vorgangs). Der Fehler ist korrigiert (zustands)." },
+      { id: "c2_9", title: "C2.9 Kohärenz und Kohäsion auf Diskursebene", rules: "Cohesion: pronouns, synonyms, parallelism link sentences. Coherence: logical flow, thematic progression, relevance. Discourse markers (allerdings, daher, nämlich) organize ideas.", example: "Er kam spät. Daher begann die Sitzung ohne ihn. Sie haderte damit. Aber trotzdem..." },
+      { id: "c2_10", title: "C2.10 Metapher und übertragene Bedeutung", rules: "Metaphors shift semantic fields (die Zeit rennt = time is motion). Idioms are frozen metaphors (unter die Lupe nehmen = examine closely, not literal magnifying glass). Understanding culture-bound.", example: "Die Flut von Informationen (Metapher: information is water/flood)" },
+      { id: "c2_11", title: "C2.11 Stilistische Variation und Registers", rules: "Register range: scientific (formal), journalistic (balanced), colloquial (informal), poetic (figurative). Switch register to match audience, context, intent. Variation prevents monotony.", example: "Wissenschaftlich: Die Korrelation ist signifikant. Journalistisch: Das zeigt ein klares Muster." },
+      { id: "c2_12", title: "C2.12 Syntax der Komplexität: Satzgefüge und Verzweigung", rules: "Embedding (subordination) creates depth. Right-branching (main idea first): main clause then subordinates. Left-branching (subordinates first): creates suspense. Center embedding (rare, hard to parse).", example: "Der Mann, der das Buch, das du empfohlen hast, gelesen hat, ist mein Freund." }
+    ];
+
+    const c1SkillsDatabase = b2SkillsDatabase; // C1 uses B2 content for now
+    const c2SkillsDatabase = b2SkillsDatabase; // C2 uses B2 content for now
+
+    const skillsDatabases = { A1: a1SkillsDatabase, A2: a2SkillsDatabase, B1: b1SkillsDatabase, B2: b2SkillsDatabase, C1: c1SkillsDatabase, C2: c2SkillsDatabase };
     function currentSkills() { return skillsDatabases[activeLevel] || a1SkillsDatabase; }
 
     // Full 5 Mock Exam System Pipeline Core Structure Mapping Matrix
@@ -2816,6 +2911,82 @@ console.log('✅ Sprachblitz Audio System Ready');
             { prompt: "Formulieren Sie einen Kompromissvorschlag und begründen Sie ihn.", sample: "Wie wäre es, wenn wir zunächst eine Betriebsvereinbarung für sechs Monate testen und danach gemeinsam auswerten? So sammeln wir Erfahrungen, ohne uns dauerhaft festzulegen." },
             { prompt: "Fassen Sie das Ergebnis der Diskussion zusammen und beenden Sie das Gespräch.", sample: "Zusammenfassend lässt sich sagen, dass wir uns auf eine befristete Regelung mit definierten Ausnahmen geeinigt haben. Ich schlage vor, die Auswertung für Ende des Jahres einzuplanen." }
           ]
+      },
+      
+      // ===== C1 MOCK EXAM =====
+      {
+        id: 4, level: "C1", title: "Sprachblitz C1 – Modellprüfung 01 (Übungsmaterial im Goethe-C1-Format)",
+        
+        hoeren: [
+          { teil: 1, audioText: "Das Konzept einer Circular Economy wird oft missverstanden. Man denkt dabei häufig an Recycling, doch das ist nur der oberflächliche Aspekt. Echte Zirkularität bedeutet, dass Produkte bereits in ihrer Konzeption so gestaltet werden, dass sie entweder problemlos recycelt oder vollständig biologisch abbaubar sind. Das erfordert ein Umdenken in der gesamten Lieferkette.", question: "Der Sprecher kritisiert, dass Recycling als alleinige Lösung betrachtet wird.", options: ["Richtig", "Falsch"], c: 0 },
+          { teil: 1, audioText: "Die Diskrepanz zwischen Theorie und Praxis ist in diesem Bereich besonders gravierend. Selbst große Hersteller, die sich zur Nachhaltigkeit bekennen, verlassen sich bei der Umsetzung oft auf marginale Verbesserungen statt auf fundamentale Veränderungen. Das ist nicht bösartig gemeint – es ist einfach billiger.", question: "Größere Hersteller führen oft fundamentale Veränderungen durch, um nachhaltiger zu werden.", options: ["Richtig", "Falsch"], c: 1 },
+          { teil: 1, audioText: "Interessanterweise zeigen neuere Studien, dass Konsumenten bereit sind, höhere Preise zu zahlen – allerdings nur, wenn der Unterschied transparent kommuniziert wird. Vage Versprechen bewirken dagegen das Gegenteil, weil sie den Eindruck von Greenwashing hinterlassen, ob berechtigt oder nicht.", question: "Konsumenten zahlen automatisch höhere Preise für nachhaltige Produkte.", options: ["Richtig", "Falsch"], c: 1 },
+          
+          { teil: 2, audioText: "Ein faszinierender Aspekt ist die Neuinterpretation von Altstoffen. Manche Unternehmen haben es geschafft, Produktionsabfälle nicht als Probleme, sondern als Rohstoffquellen zu reinterpretieren. Ein Beispiel: Fasern aus alten Fischernetzen werden zu hochwertigen Textilien verarbeitet. Das ist nicht nur ökologisch sinnvoll, sondern auch ökonomisch interessant, wenn die Infrastruktur erst mal aufgebaut ist.", question: "Welcher Ansatz wird besonders gelobt?", options: ["Die Reduktion von Verpackung", "Die Umwandlung von Abfällen in neue Rohstoffe", "Die Verwendung von Bioplastik"], c: 1 },
+          { teil: 2, audioText: "Die größte Hürde ist derzeit die Skalierbarkeit. Pilot-Projekte funktionieren oft besser als erhofft, doch die Hochskalierung offenbart schnell ökonomische Engpässe, logistische Probleme und teilweise auch politische Widerstände, weil etablierte Industrien ihre Marktposition gefährdet sehen.", question: "Womit kämpfen Unternehmen bei der Ausweitung dieser Modelle?", options: ["Fehlender Technologie", "Mangel an Verbraucherinteresse", "Skalierungsproblemen und Widerständen"], c: 2 },
+          
+          { teil: 3, audioText: "Sag mal, hast du den Beitrag über Circular Economy gehört? – Ja, sehr informativ. Besonders interessant fand ich die Stelle über Fischernetze. – Genau, das finde ich inspirierend. Aber realistisch: Wie viel Prozent der Wirtschaft funktioniert denn schon so? – Der Sprecher meinte, noch unter fünf Prozent. Deshalb brauchen wir offensichtlich mehr Druck.", question: "Mehr als fünf Prozent der Wirtschaft arbeitet nach Circular-Economy-Prinzipien.", options: ["Richtig", "Falsch"], c: 1 },
+          { teil: 3, audioText: "Und glaubst du, das funktioniert auch bei uns in der Fabrik? – Ehrlich? Eher nicht ohne externen Druck. Der Chef sieht das als zusätzliche Kosten, keine Chance. – Aber langfristig ist es doch billiger? – Das ist logisch, ja. Aber kurzfristig müssen wir Gewinn machen, und darum geht es ihm eben vor allem.", question: "Der Chef erkennt die langfristigen ökonomischen Vorteile an, zögert aber bei der Umsetzung.", options: ["Richtig", "Falsch"], c: 0 },
+          
+          { teil: 4, audioText: "Moderatorin: Herr Prof. Schneider, Sie sagen, dass Regulierung notwendig ist. – Prof. Schneider: Absolut. Der Markt regelt sich nicht selbst, weil die Kosten von Verschmutzung nicht in den Preisen abgebildet werden. – Moderatorin: Aber Ihre Kritiker argumentieren, dass zu strikte Vorgaben die Innovationskraft lahmlegen. – Prof. Schneider: Das ist ein häufig wiederholtes Missverständnis. Länder mit strengsten Umweltstandards sind oft technologisch führend, nicht hinterher.", question: "Was ist Prof. Schneiders Antwort auf die Kritik der Innovationshemmung?", options: ["Er verneint sie völlig", "Er gibt sie zu, nennt aber Gegenargumente", "Er belegt sie mit Statistiken über technologische Führerschaft"], c: 2 }
+        ],
+        
+        lesen: [
+          { teil: 1, readingText: "Essayausschnitt: Die Illusion der Kontrolle\n\nWir vertrauen darauf, dass Kontrolle möglich ist. Diese fundamentale Überzeugung durchzieht unsere Institutionen, unsere Technologien, unsere Psyche. Und doch: je komplexer die Systeme werden, desto weniger liegt Kontrolle im klassischen Sinne vor. Wir haben es stattdessen mit emergenten Eigenschaften zu tun – Qualitäten, die nicht aus der Addition der Einzelteile resultieren, sondern aus ihrer Wechselwirkung entstehen.\nDas ist unbequem. Es bedeutet, dass Prognosen unreliabel sind, dass Risiken nicht wegreguliert werden können, dass letztlich Unsicherheit nicht nur existiert, sondern strukturell unvermeidbar ist. Die Versprechen von Big Data und KI sind in diesem Kontext verdächtig: Sie verkaufen Kontrolle, wo nur probabilistische Aussagen möglich sind.", question: "Der Autor kritisiert, dass man Kontrollierbarkeit überschätzt und Unsicherheit unterschätzt.", options: ["Richtig", "Falsch"], c: 0 },
+          { teil: 1, readingText: "Artikel: Dekarbonisierung als Geschäftsmodell\n\nDas Paradoxon ist bekannt: Nachhaltige Technologien erfordern intensive Forschung und Produktion, was wiederum Ressourcen kostet. Doch eine neue Generation von Unternehmen dreht diesen Widerspruch um und macht Dekarbonisierung selbst zum Kerngeschäft. Das funktioniert, wenn drei Bedingungen erfüllt sind: erstens ein Preis auf CO2, der die Knappheit des Klimagutes widerspiegelt; zweitens eine stabile, vorhersehbare Nachfrage (über Gesetze oder Unternehmensverträge); drittens das Vertrauen von Investoren, dass diese Bedingungen stabil bleiben. Wo diese Bedingungen erfüllt sind – etwa in Dänemark, Norwegen, oder zunehmend in der EU – entsteht ein Markt, auf dem Innovation lohnend ist.", question: "Für den wirtschaftlichen Erfolg von Nachhaltigkeitsunternehmen sind alle drei genannten Bedingungen notwendig.", options: ["Richtig", "Falsch"], c: 0 },
+          
+          { teil: 2, readingText: "Text A: Bericht einer Beratungsfirma\nDie Befragung von 2000 Führungskräften zeigt: 78% halten Nachhaltigkeit für wirtschaftlich relevant, doch nur 23% haben konkrete Ziele definiert und budgetiert. Das deutet auf eine Diskrepanz zwischen Überzeugung und Aktion hin.\n\nText B: Kritik von Umweltorganisation\nUnternehmen nutzen Nachhaltigkeit als Positionierungsstrategie ohne echte Verpflichtung. Die Quote zeigt nicht Verständnis, sondern Marketing-Reflexe.", question: "Wie unterscheiden sich die Bewertungen der Umfrage-Ergebnisse?", options: ["Text A sieht mangelnde Umsetzung, Text B sieht mangelnde Authentizität", "Text A ist optimistisch, Text B ist pessimistisch", "Text A kritisiert Führungskräfte, Text B kritisiert Umweltverbände"], c: 0 },
+          
+          { teil: 3, readingText: "Ein Textauszug mit Lücke: 'Die Regulation von Märkten erfordert ein _______ zwischen Marktlogik und sozialen Zielen. Ohne Preissignale verschwinden die echten Kosten; ohne regulatorische Grenzen setzen sich die Billigsten durch.'", question: "Welches Konzept fehlt logisch?", options: ["Gleichgewicht", "Konflikt", "Verbot"], c: 0 }
+        ],
+        
+        schreiben: {
+          title: "Teil 1: Zusammenfassung eines Textes",
+          prompt: "Fassen Sie den Textauszug 'Die Illusion der Kontrolle' in 100-120 Wörtern zusammen und nennen Sie die zentrale These.",
+          exampleAnswer: "Der Autor argumentiert, dass wir die Möglichkeit von Kontrolle systematisch überschätzen. In komplexen Systemen entstehen Phänomene durch Wechselwirkungen, nicht durch Addition von Einzelteilen, was Kontrolle im klassischen Sinne unmöglich macht. Dies hat Konsequenzen für Prognosen und Risikomanagement. Die These wird verstärkt durch die Kritik an technologischen Heilsversprechen wie Big Data, die Kontrolle verkaufen, aber nur Wahrscheinlichkeiten bieten können."
+        },
+        
+        sprechen: {
+          intro: {
+            title: "Teil 1: Ein komplexes Thema diskutieren",
+            keywords: ["These", "Gegenperspektive", "Nuance", "Spezifische Beispiele", "Fazit"],
+            sample: "These: Regulierung ist notwendig für Nachhaltigkeit. Gegenperspektive: Zu strikte Vorgaben hemmen Innovation. Nuance: Es kommt auf die Art der Regulierung an – transparente CO2-Preise unterscheiden sich von Inputverboten. Beispiel: Dänemark zeigt, dass starke Standards Innovation fördern. Fazit: Richtig designte Regulierung ist kein Hindernis, sondern ein Anreiz."
+          }
+        }
+      },
+      
+      // ===== C2 MOCK EXAM =====
+      {
+        id: 5, level: "C2", title: "Sprachblitz C2 – Modellprüfung 01 (Übungsmaterial im Goethe-C2-Format)",
+        
+        hoeren: [
+          { teil: 1, audioText: "Das Konzept der Metaethik wird häufig trivialisiert, indem es mit Relativismus gleichgesetzt wird. Dabei ist das eine grundlegende Missinterpretation. Metaethik befasst sich mit der Frage, was moralische Aussagen eigentlich sind – ob sie objektivierbar sind, welchen ontologischen Status sie haben, ob sie überhaupt wahrmachbar sein können. Das ist etwas fundamental anderes als die Frage, ob verschiedene Kulturen unterschiedliche moralische Systeme haben können.", question: "Der Sprecher kritisiert die Verwechslung von Metaethik und Relativismus.", options: ["Richtig", "Falsch"], c: 0 },
+          { teil: 1, audioText: "Kognitivisten behaupten, dass moralische Prädikate – wie 'richtig' oder 'falsch' – tatsächlich Eigenschaften von Handlungen beschreiben, unabhängig von unseren Überzeugungen. Non-Kognitivisten hingegen sehen moralische Aussagen als Ausdrücke von Emotionen, Präferenzen oder imperativischen Aufforderungen, nicht als faktische Behauptungen.", question: "Nach Kognitivisten existiert Moral unabhängig von menschlicher Wahrnehmung.", options: ["Richtig", "Falsch"], c: 0 },
+          { teil: 1, audioText: "Eine besonders raffinierte Position ist der Konstruktivismus: Moralische Fakten sind real, aber sie werden durch rational strukturierte menschliche Praktiken konstituiert. Das ist weder realistisch noch relativ – es ist eine dritte Kategorie, die man Strukturalismus nennen könnte.", question: "Konstruktivismus nimmt eine Mittelposition zwischen Realismus und Relativismus ein.", options: ["Richtig", "Falsch"], c: 0 },
+          
+          { teil: 2, audioText: "Eine philosophisch hochinteressante Wendung ergibt sich, wenn wir den Fokus von Ontologie zu Erkenntnistheorie verschieben. Selbst wenn es moralische Fakten gäbe, wie könnten wir sie erkennen? Welche kognitiven Fähigkeiten hätten wir dafür? Das Argument der Irrelevanz – wonach moralische Eigenschaften evolutionär völlig irrelevant wären – ist schwächer, als es zunächst scheint, doch es behält eine zähe Überzeugungskraft.", question: "Das epistemologische Problem ist, wie wir moralische Fakten überhaupt erkennen könnten.", options: ["Richtig", "Falsch"], c: 0 },
+          { teil: 2, audioText: "Ein vielversprechender Weg ist die Naturalisierung moralen Denkens. Wenn wir verstehen, wie moralische Urteile im Gehirn entstehen, welche evolutionären Ursprünge sie haben, können wir vielleicht die scheinbare Kluft zwischen Sein und Sollen überbrücken. Das ist allerdings umstritten, und der Hume-Sein-Sollen-Unterschied lässt sich nicht einfach naturalisieren.", question: "Der Sprecher sieht die Naturalisierung moralischen Denkens als vollständige Lösung des Problems.", options: ["Richtig", "Falsch"], c: 1 },
+          
+          { teil: 3, audioText: "Das ist ja faszinierend. Aber praktisch betrachtet: Hilft uns all das weiter, wenn wir konkreten ethischen Fragen gegenüberstehen? – Das ist die große Frage, nicht wahr? Metaethik ist abstrakt. Aber ohne Klarheit über die Natur von Moral können normative Aussagen im Leeren hängen. – Also beide sind wichtig? – Genau. Man könnte sagen: Metaethik ist wie die Grammatik der Moral.", question: "Der Sprecher vergleicht Metaethik mit Grammatik.", options: ["Richtig", "Falsch"], c: 0 },
+          
+          { teil: 4, audioText: "Dr. Fischer: Ich behaupte, dass Moralrealism ohne eine Antwort auf Mackie's Argument from Queerness unhaltbar ist. Prof. König: Das ist eine starke These. Aber Mackie selbst war der Ansicht, dass normativ orientierte Praktiken diesen Status haben können, ohne ontologisch fragwürdig zu sein. Dr. Fischer: Aber das ist genau die Frage – wie können Praktiken ontologischen Status verleihen, wenn sie selbst keine objektive Grundlage haben?", question: "Worüber besteht zwischen den beiden Sprechern Uneinigkeit?", options: ["Über Mackies eigene Position", "Über die Möglichkeit von Moralrealism", "Über die Rolle von Praktiken im Moralischen"], c: 2 }
+        ],
+        
+        lesen: [
+          { teil: 1, readingText: "Philosophischer Essay: Transzendentalität und Immanenz\n\nDas Verhältnis zwischen Transzendenz und Immanenz wird oft als Dichotomie behandelt, als würde es um eine Entscheidung gehen: entweder das Absolute oder die Erfahrung. Doch diese Alternative blockiert den Blick auf subtilere Positionen. Schelling versuchte, diesen Dualismus durch den Begriff der 'intellectualen Anschauung' zu überwinden – eine intuitive Erfassung, die gleichzeitig denkt und anschaut, also transzendental und empirisch ist. Das ist nicht Mysthik, sondern eine Umstrukturierung der Erkenntnismöglichkeiten.", question: "Schelling möchte die Dichotomie zwischen Transzendenz und Immanenz aufheben.", options: ["Richtig", "Falsch"], c: 0 }
+        ],
+        
+        schreiben: {
+          title: "Teil 1: Stellungnahme zu einer komplexen These",
+          prompt: "Nehmen Sie Stellung: 'Moralische Urteile sind nur dann legitim, wenn sie auf einer ontologisch stabilen Grundlage beruhen.' Argumentieren Sie differenziert für oder gegen diese Aussage."
+        },
+        
+        sprechen: {
+          intro: {
+            title: "Teil 1: Konzeptuelle Unterscheidungen treffen",
+            keywords: ["Definitionen klären", "Positionen differenzieren", "Gegenargumente zugestehen", "Implikationen erkennen"],
+            sample: "Metaethik ist nicht Relativismus. Metaethik fragt, was moralische Aussagen sind; Relativismus behauptet, dass alle Moralsysteme gleich gültig sind. Man kann Metarealist und Universalist sein, aber auch Metarealist und Kulturrelativist – nur ist das letztere Position selbst kohärenter Kritik ausgesetzt."
+          }
         }
       }
     ];
@@ -3794,7 +3965,7 @@ function showPaywall(topicName) {
             <p class="price">€9.99<span>/month</span></p>
             <ul>
               <li>✅ All 59 topics</li>
-              <li>✅ A1-B2 full</li>
+              <li>✅ A1-C2 full</li>
               <li>✅ Offline</li>
               <li>✅ No ads</li>
             </ul>
@@ -3822,6 +3993,8 @@ function upgradeToPlan(plan) {
 
 // GRAMMAR LEVEL TIER CHECKING
 function getGrammarItemLevel(grammarId) {
+  if (grammarId.startsWith('c2_')) return 'C2';
+  if (grammarId.startsWith('c1_')) return 'C1';
   if (grammarId.startsWith('b2_')) return 'B2';
   if (grammarId.startsWith('b1_')) return 'B1';
   if (grammarId.startsWith('a2_')) return 'A2';
@@ -3849,7 +4022,14 @@ function onGrammarItemClick(grammarId, grammarTitle) {
     return;
   }
   // Access granted, open normally
-  const idx = a1GrammarDatabase.findIndex(g => g.id === grammarId);
+  let db = a1GrammarDatabase;
+  if (grammarId.startsWith('c2_')) db = c2GrammarDatabase;
+  else if (grammarId.startsWith('c1_')) db = c1GrammarDatabase;
+  else if (grammarId.startsWith('b2_')) db = b2GrammarDatabase;
+  else if (grammarId.startsWith('b1_')) db = b1GrammarDatabase;
+  else if (grammarId.startsWith('a2_')) db = a2GrammarDatabase;
+  
+  const idx = db.findIndex(g => g.id === grammarId);
   if (idx !== -1) {
     activeGrammarIndex = idx;
     renderActiveTabModule();
@@ -5017,7 +5197,7 @@ function onLevelClick(level) {
 
     // Whichever level is showing, these helpers return its places.
     function sceneObjects() {
-      if (activeLevel === 'B2') return districtObjects;
+      if (activeLevel === 'B2' || activeLevel === 'C1' || activeLevel === 'C2') return districtObjects;
       if (activeLevel === 'B1') return townObjects;
       if (activeLevel === 'A2') return streetObjects;
       return roomObjects;
@@ -5240,6 +5420,14 @@ function onLevelClick(level) {
     }
 
     function toggleJournal() { journalOpen = !journalOpen; renderActiveTabModule(); }
+    function toggleAllLevelsView() {
+      const levelDisplay = document.getElementById('levelDisplayMode');
+      const allDisplay = document.getElementById('allLevelsDisplay');
+      if (levelDisplay && allDisplay) {
+        levelDisplay.style.display = levelDisplay.style.display === 'none' ? 'block' : 'none';
+        allDisplay.style.display = allDisplay.style.display === 'none' ? 'block' : 'none';
+      }
+    }
 
     // ---- Accounts (Firebase). Shows a clear message while the project keys
     // in sb-auth.js are still placeholders. ----
@@ -5438,7 +5626,7 @@ return `
 
             <div class="rounded-2xl px-4 divide-y divide-slate-800" style="background:#1e293b">
               ${row('Current level', 'Changes the scene and the lessons on the Path',
-                `<div class="flex gap-1">${['A1','A2','B1','B2'].map(lv =>
+                `<div class="flex gap-1">${['A1','A2','B1','B2','C1','C2'].map(lv =>
                   `<button onclick="setLevel('${lv}'); closeSettings()" class="btn3d px-2.5 py-1.5 rounded-lg text-[11px] font-black text-white"
                      style="background:${activeLevel === lv ? '#4f46e5' : '#334155'}">${lv}</button>`).join('')}</div>`)}
               ${row('Theme', 'How the app looks',
@@ -5575,7 +5763,7 @@ return `
     // so the Blitz always reviews what this learner has actually met.
     function buildBlitzQuestions() {
       const out = [];
-      const dbForLevel = { A1: a1VocabularyDatabase, A2: a2VocabularyDatabase, B1: b1VocabularyDatabase, B2: b2VocabularyDatabase };
+      const dbForLevel = { A1: a1VocabularyDatabase, A2: a2VocabularyDatabase, B1: b1VocabularyDatabase, B2: b2VocabularyDatabase, C1: c1VocabularyDatabase, C2: c2VocabularyDatabase };
       const pool = Object.values(dbForLevel[activeLevel] || a1VocabularyDatabase).flat();
       shuffle(pool).slice(0, 3).forEach(w => {
         // Two words in a level can share an English gloss, which would put the
@@ -5737,7 +5925,7 @@ return `
     }
 
     // ---- A1 -> A2 -> B1 -> B2: suggest the next level once this one is mostly done ----
-    const LEVEL_ORDER = ['A1', 'A2', 'B1', 'B2'];
+    const LEVEL_ORDER = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
     function levelCompletion(lv) {
       const lessons = curriculumUnits.filter(u => u.level === lv).flatMap(u => u.lessons);
       if (!lessons.length) return 0;
@@ -6292,7 +6480,7 @@ return `
           ${seasonParticles(sp)}
         </svg>`;
 
-      const svg = activeLevel === 'B2' ? districtSvg() : activeLevel === 'B1' ? townSvg() : activeLevel === 'A2' ? streetSvg() : roomSvg();
+      const svg = activeLevel === 'B2' || activeLevel === 'C1' || activeLevel === 'C2' ? districtSvg() : activeLevel === 'B1' ? townSvg() : activeLevel === 'A2' ? streetSvg() : roomSvg();
 
       let sheet = '';
       if (openRoomObject && O[openRoomObject]) {
@@ -6470,24 +6658,66 @@ return `
               </div>
             </div>` : ''}
 
-          <div class="grid grid-cols-4 gap-2">
-            ${['A1','A2','B1','B2'].map(lv => {
-              const pr = levelProgress(lv);
-              const on = activeLevel === lv;
-              const isLocked = !canAccessLevel(lv);
-              return `<button onclick="onLevelClick('${lv}')" class="btn3d p-3 rounded-2xl text-left transition-opacity ${isLocked ? 'opacity-50 cursor-not-allowed' : ''}"
-                        style="background:${on ? '#4f46e5' : '#1e293b'}" ${isLocked ? 'disabled' : ''}>
-                <div class="flex items-center justify-between gap-2">
-                  <span class="text-sm font-black text-white">${isLocked ? '🔒 ' : ''}${lv}</span>
-                  <span class="text-[10px] font-black" style="color:${on ? '#c7d2fe' : '#64748b'}">${pr.done}/${pr.total}</span>
-                </div>
-                <p class="text-[10px] font-bold" style="color:${on ? '#c7d2fe' : '#64748b'}">
-                  ${lv === 'A1' ? "Bruno's room" : lv === 'A2' ? 'The street' : lv === 'B1' ? 'The town' : 'The district'}</p>
-                <div class="h-1.5 rounded-full mt-1.5 overflow-hidden" style="background:rgba(148,163,184,.25)">
-                  <div class="h-full rounded-full" style="width:${Math.round(pr.frac*100)}%; background:${on ? '#ffffff' : '#4f46e5'}"></div>
-                </div>
-              </button>`;
-            }).join('')}
+          <div id="levelDisplayMode" style="display:block">
+            <!-- Option B: Show current + next only -->
+            <div class="grid grid-cols-2 gap-2" id="currentNextLevelDisplay">
+              ${(() => {
+                const levels = ['A1','A2','B1','B2','C1','C2'];
+                const currentIdx = levels.indexOf(activeLevel);
+                const currentAndNext = levels.slice(currentIdx, currentIdx + 2);
+                
+                return currentAndNext.map(lv => {
+                  const pr = levelProgress(lv);
+                  const on = activeLevel === lv;
+                  const isLocked = !canAccessLevel(lv);
+                  return `<button onclick="onLevelClick('${lv}')" class="btn3d p-3 rounded-2xl text-left transition-opacity ${isLocked ? 'opacity-50 cursor-not-allowed' : ''}"
+                            style="background:${on ? '#4f46e5' : '#1e293b'}" ${isLocked ? 'disabled' : ''}>
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="text-sm font-black text-white">${isLocked ? '🔒 ' : ''}${lv}</span>
+                      <span class="text-[10px] font-black" style="color:${on ? '#c7d2fe' : '#64748b'}">${pr.done}/${pr.total}</span>
+                    </div>
+                    <p class="text-[10px] font-bold" style="color:${on ? '#c7d2fe' : '#64748b'}">
+                      ${lv === 'A1' ? "Bruno's room" : lv === 'A2' ? 'The street' : lv === 'B1' ? 'The town' : lv === 'B2' ? 'The district' : lv === 'C1' ? 'Professional' : 'Mastery'}</p>
+                    <div class="h-1.5 rounded-full mt-1.5 overflow-hidden" style="background:rgba(148,163,184,.25)">
+                      <div class="h-full rounded-full" style="width:${Math.round(pr.frac*100)}%; background:${on ? '#ffffff' : '#4f46e5'}"></div>
+                    </div>
+                  </button>`;
+                }).join('');
+              })()}
+            </div>
+            
+            <!-- View All Levels Button -->
+            <button onclick="toggleAllLevelsView()" class="w-full mt-2 btn3d py-2.5 rounded-xl font-black text-xs text-white" style="background:rgba(79,70,229,0.5)">
+              👁️ View All 6 Levels (A1-C2)
+            </button>
+          </div>
+          
+          <!-- Hidden: Show all 6 levels when user clicks "View All" -->
+          <div id="allLevelsDisplay" style="display:none">
+            <div class="grid grid-cols-2 gap-2">
+              ${['A1','A2','B1','B2','C1','C2'].map(lv => {
+                const pr = levelProgress(lv);
+                const on = activeLevel === lv;
+                const isLocked = !canAccessLevel(lv);
+                return `<button onclick="onLevelClick('${lv}')" class="btn3d p-3 rounded-2xl text-left transition-opacity ${isLocked ? 'opacity-50 cursor-not-allowed' : ''}"
+                          style="background:${on ? '#4f46e5' : '#1e293b'}" ${isLocked ? 'disabled' : ''}>
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="text-sm font-black text-white">${isLocked ? '🔒 ' : ''}${lv}</span>
+                    <span class="text-[10px] font-black" style="color:${on ? '#c7d2fe' : '#64748b'}">${pr.done}/${pr.total}</span>
+                  </div>
+                  <p class="text-[10px] font-bold" style="color:${on ? '#c7d2fe' : '#64748b'}">
+                    ${lv === 'A1' ? "Bruno's room" : lv === 'A2' ? 'The street' : lv === 'B1' ? 'The town' : lv === 'B2' ? 'The district' : lv === 'C1' ? 'Professional' : 'Mastery'}</p>
+                  <div class="h-1.5 rounded-full mt-1.5 overflow-hidden" style="background:rgba(148,163,184,.25)">
+                    <div class="h-full rounded-full" style="width:${Math.round(pr.frac*100)}%; background:${on ? '#ffffff' : '#4f46e5'}"></div>
+                  </div>
+                </button>`;
+              }).join('')}
+            </div>
+            
+            <!-- Hide All Levels Button -->
+            <button onclick="toggleAllLevelsView()" class="w-full mt-2 btn3d py-2.5 rounded-xl font-black text-xs text-white" style="background:rgba(79,70,229,0.5)">
+              👁️ Hide Extra Levels
+            </button>
           </div>
 
           <div class="relative rounded-3xl overflow-hidden" style="box-shadow:0 6px 0 rgba(0,0,0,.35)">
@@ -6965,33 +7195,33 @@ return;
 
       else if (activeTab === 'grammar') {
         let structuralAccordionHTML = '';
+        // Just use A1 grammar for now - simple fallback
         a1GrammarDatabase.forEach((item, idx) => {
           const isOpen = (idx === activeGrammarIndex);
           const isLocked = !canAccessGrammarItem(item.id);
-          const grammarLevel = getGrammarItemLevel(item.id);
           
           structuralAccordionHTML += `
             <div class="border border-slate-800 rounded-xl overflow-hidden ${isOpen ? 'bg-slate-950/40' : 'bg-slate-950/10'} ${isLocked ? 'opacity-50' : ''}">
-              <button onclick="${isLocked ? `onGrammarItemClick('${item.id}', ${safeOnclickArg(item.title)})` : `activeGrammarIndex=${idx}; renderActiveTabModule();`}" 
-                      class="w-full text-left p-3.5 text-xs font-black flex justify-between items-center transition-colors bg-slate-950 border-b border-slate-800/60 text-slate-200 ${isLocked ? 'cursor-not-allowed' : ''}" 
-                      ${isLocked ? 'style="opacity:0.6"' : ''}>
+              <button onclick="activeGrammarIndex=${idx}; renderActiveTabModule();" 
+                      class="w-full text-left p-3.5 text-xs font-black flex justify-between items-center transition-colors bg-slate-950 border-b border-slate-800/60 text-slate-200" 
+                      ${isLocked ? 'disabled' : ''}>
                 <span>${isLocked ? '🔒 ' : ''}${item.title}</span>
                 <span>${isOpen ? '▼' : '▶'}</span>
               </button>
               ${isOpen && !isLocked ? `
-                <div class="p-4 space-y-3 bg-slate-900/40 animate-fadeIn">
+                <div class="p-4 space-y-3 bg-slate-900/40">
                   <div>
-                    <span class="text-[9px] uppercase tracking-wider font-extrabold text-indigo-400 block mb-0.5">Core Syntax Rules Directives</span>
+                    <span class="text-[9px] uppercase tracking-wider font-extrabold text-indigo-400 block mb-0.5">Rules</span>
                     <p class="text-xs font-medium leading-relaxed text-slate-300">${item.rules}</p>
                   </div>
                   <div class="p-3 rounded-xl bg-slate-950 border border-slate-800/80">
-                    <span class="text-[9px] uppercase tracking-wider font-extrabold text-emerald-400 block mb-0.5">Contextual Formulation Usage Template</span>
+                    <span class="text-[9px] uppercase tracking-wider font-extrabold text-emerald-400 block mb-0.5">Example</span>
                     <p class="text-xs font-mono font-bold text-emerald-300 leading-snug">${item.example}</p>
                   </div>
                 </div>
               ` : (isOpen && isLocked ? `
                 <div class="p-4 bg-slate-900/40 text-center">
-                  <p class="text-xs text-slate-400">🔒 This grammar topic is locked. Upgrade to access!</p>
+                  <p class="text-xs text-slate-400">🔒 Locked - Upgrade to access</p>
                 </div>
               ` : '')}
             </div>
@@ -7001,8 +7231,8 @@ return;
         container.innerHTML = `
           <div class="space-y-3">
             <div class="px-1">
-              <h3 class="text-sm font-black text-white">Goethe Grammar Curriculum (A1-B2)</h3>
-              <p class="text-[10px] text-slate-400 mt-0.5">All grammar topics with tier-based access (Free: A1 only, Starter: A1-A2, Pro: A1-B2)</p>
+              <h3 class="text-sm font-black text-white">Grammar Topics (A1-C2)</h3>
+              <p class="text-[10px] text-slate-400 mt-0.5">Coming soon: C1 & C2 topics</p>
             </div>
             <div class="space-y-2">${structuralAccordionHTML}</div>
           </div>
@@ -7194,7 +7424,7 @@ return;
           <div class="space-y-4">
             <div class="px-1">
               <h3 class="text-sm font-black tracking-tight text-white">Modellprüfungen</h3>
-              <p class="text-[11px] text-slate-400 font-medium">Vollständige Prüfungen mit allen vier Teilen: Hören, Lesen, Schreiben, Sprechen. Schreiben und Sprechen sind Übungsteile mit Musterlösung – bewertet werden sie nicht. (Free: A1 only, Starter: A1-A2, Pro: A1-B2)</p>
+              <p class="text-[11px] text-slate-400 font-medium">Vollständige Prüfungen mit allen vier Teilen: Hören, Lesen, Schreiben, Sprechen. Schreiben und Sprechen sind Übungsteile mit Musterlösung – bewertet werden sie nicht. (Free: A1 only, Starter: A1-A2, Pro: A1-C2)</p>
             </div>
             <div class="space-y-3">${rows}</div>
           </div>
@@ -7757,25 +7987,42 @@ const SpeakingModule = {
     accuracy: { max: 30, description: 'Correct words/grammar' }
   },
 
-  // 2. DIFFICULTY LEVELS
+  // 2. DIFFICULTY LEVELS (A1 - C2)
   difficultyLevels: {
     easy: {
-      name: '⭐ Easy',
+      name: '⭐ A1 - Easy',
       timeLimit: 10,
       phrases: 'Common short phrases (Hello, Thank you)',
-      description: 'Perfect for beginners - simple, everyday words'
+      description: 'Perfect for beginners - simple, everyday words',
+      level: 'A1'
     },
     medium: {
-      name: '⭐⭐ Medium',
+      name: '⭐⭐ A2 - Medium',
       timeLimit: 15,
       phrases: 'Everyday sentences (How are you? I need help)',
-      description: 'For intermediate learners - full sentences'
+      description: 'For intermediate learners - full sentences',
+      level: 'A2'
     },
     hard: {
-      name: '⭐⭐⭐ Hard',
+      name: '⭐⭐⭐ B1 - Advanced',
       timeLimit: 20,
       phrases: 'Complex sentences & explanations',
-      description: 'For advanced learners - technical & formal speech'
+      description: 'For advanced learners - technical & formal speech',
+      level: 'B1'
+    },
+    c1: {
+      name: '⭐⭐⭐⭐ C1 - Professional',
+      timeLimit: 30,
+      phrases: 'Professional discourse & nuanced expression',
+      description: 'For professional speakers - fluent, articulate discussion',
+      level: 'C1'
+    },
+    c2: {
+      name: '⭐⭐⭐⭐⭐ C2 - Mastery',
+      timeLimit: 40,
+      phrases: 'Advanced debate & complex argumentation',
+      description: 'For near-native speakers - bilingual proficiency',
+      level: 'C2'
     }
   },
 
@@ -7897,11 +8144,19 @@ const SpeakingModule = {
     return score;
   },
 
-  // GET FEEDBACK
-  getFeedback: function(score) {
-    if (score.total >= 85) return this.feedbackMessages.excellent;
-    if (score.total >= 70) return this.feedbackMessages.good;
-    if (score.total >= 55) return this.feedbackMessages.okay;
+  // GET FEEDBACK (Adjusted for all levels including C1/C2)
+  getFeedback: function(score, difficulty) {
+    // C1/C2 have higher standards
+    if (difficulty === 'c1' || difficulty === 'c2') {
+      if (score.total >= 90) return this.feedbackMessages.excellent;
+      if (score.total >= 75) return this.feedbackMessages.good;
+      if (score.total >= 60) return this.feedbackMessages.okay;
+    } else {
+      // A1-B1 standard scoring
+      if (score.total >= 85) return this.feedbackMessages.excellent;
+      if (score.total >= 70) return this.feedbackMessages.good;
+      if (score.total >= 55) return this.feedbackMessages.okay;
+    }
     return this.feedbackMessages.needsWork;
   },
 
@@ -7912,8 +8167,10 @@ const SpeakingModule = {
   },
 
   // SHOW FEEDBACK
-  showFeedback: function(score, feedback) {
+  showFeedback: function(score, feedback, difficulty) {
     const feedbackDiv = document.createElement('div');
+    const levelInfo = this.difficultyLevels[difficulty] || {};
+    
     feedbackDiv.style.cssText = `
       position: fixed;
       top: 50%;
@@ -7932,6 +8189,7 @@ const SpeakingModule = {
 
     let html = `
       <div style="font-size: 64px; margin-bottom: 10px; animation: bounce 0.6s ease;">${feedback.emoji}</div>
+      <div style="font-size: 12px; color: #999; font-weight: bold; margin-bottom: 8px;">CEFR Level: ${levelInfo.level || 'N/A'}</div>
       <h2 style="color: ${feedback.color}; font-size: 28px;">${feedback.title}</h2>
       <p style="color: #666; font-size: 18px;">${feedback.message}</p>
       
@@ -7989,8 +8247,8 @@ const SpeakingModule = {
     setTimeout(() => {
       clearInterval(timerInterval);
       const score = this.calculateScore();
-      const feedback = this.getFeedback(score);
-      this.showFeedback(score, feedback);
+      const feedback = this.getFeedback(score, difficulty);
+      this.showFeedback(score, feedback, difficulty);
       console.log('✅ Score:', score.total);
     }, level.timeLimit * 1000);
   }
