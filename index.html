@@ -4486,19 +4486,57 @@ function onLevelClick(level) {
     }
 
     // Main Startup Setup System Directives
-    window.onload = function() {
-      registerDailyStreak();
-      loadDailyXP();
-      applyThemeProfile(currentThemeProfile);
-      updateGoalRing();
-      updateDashboardTelemetry();
-      renderActiveTabModule();
+    // Safety timeout: if onload takes too long, hide splash anyway
+    let onloadTimeout = setTimeout(() => {
+      console.error('⏱️ TIMEOUT: Onload took too long, forcing splash screen hide');
       const splash = document.getElementById('splash-screen');
-      if (splash) {
-        setTimeout(() => {
-          splash.classList.add('hide');
-          setTimeout(() => splash.remove(), 500);
-        }, 1400);
+      if (splash && !splash.classList.contains('hide')) {
+        splash.classList.add('hide');
+        setTimeout(() => splash.remove(), 500);
+      }
+    }, 5000); // 5 second timeout
+      try {
+        console.log('🔄 Onload: registerDailyStreak...');
+        registerDailyStreak();
+        console.log('✅ Streak registered');
+        
+        console.log('🔄 Onload: loadDailyXP...');
+        loadDailyXP();
+        console.log('✅ Daily XP loaded');
+        
+        console.log('🔄 Onload: applyThemeProfile...');
+        applyThemeProfile(currentThemeProfile);
+        console.log('✅ Theme applied');
+        
+        console.log('🔄 Onload: updateGoalRing...');
+        updateGoalRing();
+        console.log('✅ Goal ring updated');
+        
+        console.log('🔄 Onload: updateDashboardTelemetry...');
+        updateDashboardTelemetry();
+        console.log('✅ Dashboard telemetry updated');
+        
+        console.log('🔄 Onload: renderActiveTabModule...');
+        renderActiveTabModule();
+        console.log('✅ Tab module rendered');
+        
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+          console.log('🔄 Hiding splash screen...');
+          setTimeout(() => {
+            splash.classList.add('hide');
+            setTimeout(() => splash.remove(), 500);
+          }, 1400);
+        } else {
+          console.warn('⚠️ Splash screen not found');
+        }
+        console.log('✅ Onload complete!');
+        clearTimeout(onloadTimeout); // Cancel the safety timeout
+      } catch (err) {
+        console.error('❌ ONLOAD ERROR:', err);
+        console.error('Stack:', err.stack);
+        const splash = document.getElementById('splash-screen');
+        if (splash) splash.innerHTML = `<p style="color:red">Error: ${err.message}</p>`;
       }
     };
 
