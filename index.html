@@ -4477,6 +4477,8 @@ function onLevelClick(level) {
         setTimeout(() => splash.remove(), 500);
       }
     }, 5000); // 5 second timeout
+
+    window.onload = function() {
       try {
         console.log('🔄 Onload: registerDailyStreak...');
         registerDailyStreak();
