@@ -7290,8 +7290,16 @@ return;
 
       else if (activeTab === 'grammar') {
         let structuralAccordionHTML = '';
-        // Just use A1 grammar for now - simple fallback
-        a1GrammarDatabase.forEach((item, idx) => {
+        
+        // Get the correct grammar database based on active level
+        let grammarDB = a1GrammarDatabase;
+        if (activeLevel === 'A2') grammarDB = a2GrammarDatabase;
+        else if (activeLevel === 'B1') grammarDB = b1GrammarDatabase;
+        else if (activeLevel === 'B2') grammarDB = b2GrammarDatabase;
+        else if (activeLevel === 'C1') grammarDB = c1GrammarDatabase;
+        else if (activeLevel === 'C2') grammarDB = c2GrammarDatabase;
+        
+        grammarDB.forEach((item, idx) => {
           const isOpen = (idx === activeGrammarIndex);
           const isLocked = !canAccessGrammarItem(item.id);
           
@@ -7326,8 +7334,8 @@ return;
         container.innerHTML = `
           <div class="space-y-3">
             <div class="px-1">
-              <h3 class="text-sm font-black text-white">Grammar Topics (A1-C2)</h3>
-              <p class="text-[10px] text-slate-400 mt-0.5">Coming soon: C1 & C2 topics</p>
+              <h3 class="text-sm font-black text-white">Grammar Topics (${activeLevel})</h3>
+              <p class="text-[10px] text-slate-400 mt-0.5">${grammarDB.length} topics for level ${activeLevel}</p>
             </div>
             <div class="space-y-2">${structuralAccordionHTML}</div>
           </div>
