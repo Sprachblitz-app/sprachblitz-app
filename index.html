@@ -4061,6 +4061,11 @@ function canAccessGrammarItem(grammarId) {
   let userTier = localStorage.getItem('sb_user_tier') || 'free';
   const level = getGrammarItemLevel(grammarId);
   
+  // Allow viewing grammar topics for the current active level
+  if (level === activeLevel) {
+    return true;
+  }
+  
   if (userTier === 'free') {
     return level === 'A1';
   }
