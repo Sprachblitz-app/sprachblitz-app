@@ -2518,7 +2518,7 @@ console.log('✅ Sprachblitz Audio System Ready');
     // Full 5 Mock Exam System Pipeline Core Structure Mapping Matrix
     const mockExamsDatabase = [
       {
-        id: 0, level: "A1", title: "Sprachblitz A1 – Modellprüfung 01 (Übungsmaterial im Goethe-A1-Format)",
+        id: 0, level: "A1", title: "Sprachblitz A1 Mock Test 01",
         hoeren: [
           { teil: 1, audioText: "Hallo Sonja, hier ist Bea. Wir treffen uns morgen um sieben, nicht um sechs. Kannst du bitte den Kuchen mitbringen? Ich habe die Getränke schon gekauft. Bis morgen!", question: "Was soll Sonja mitbringen?", options: ["Getränke", "Brot", "Kuchen", "Obst"], c: 2 },
           { teil: 1, audioText: "Guten Tag. Der Bus nach Bremen fährt heute nicht um zehn Uhr, sondern erst um halb elf. Bitte warten Sie an der Haltestelle.", question: "Wann fährt der Bus?", options: ["Um 10 Uhr", "Um 10.30 Uhr", "Um 11 Uhr", "Um 11.30 Uhr"], c: 1 },
@@ -2584,7 +2584,7 @@ console.log('✅ Sprachblitz Audio System Ready');
         }
       },
       {
-        id: 1, level: "A2", title: "Sprachblitz A2 – Modellprüfung 01 (Übungsmaterial im Goethe-A2-Format)",
+        id: 1, level: "A2", title: "Sprachblitz A2 Mock Test 01",
         hoeren: [
           { teil: 1, audioText: "Liebe Kundinnen und Kunden, wegen einer Betriebsfeier schließen wir heute schon um 19 Uhr, also eine Stunde früher als sonst. Morgen sind wir wieder wie gewohnt bis 20 Uhr für Sie da. Bitte kommen Sie rechtzeitig zur Kasse.", question: "Wann schließt das Kaufhaus heute?", options: ["Um 18 Uhr.", "Um 20 Uhr.", "Um 19 Uhr."], c: 2 },
           { teil: 1, audioText: "Hallo Jonas, hier ist Mona. Ich stehe im Stau und schaffe es nicht um sieben. Können wir uns um halb acht treffen? Und bring bitte die Tickets mit, ich habe sie auf dem Küchentisch liegen lassen.", question: "Was soll Jonas mitbringen?", options: ["Den Autoschlüssel.", "Etwas zu essen.", "Die Tickets."], c: 2 },
@@ -2675,7 +2675,7 @@ console.log('✅ Sprachblitz Audio System Ready');
         }
       },
       {
-        id: 2, level: "B1", title: "Sprachblitz B1 – Modellprüfung 01 (Übungsmaterial im Goethe-B1-Format)",
+        id: 2, level: "B1", title: "Sprachblitz B1 Mock Test 01",
 
         // ---------- HÖREN ----------
         hoeren: [
@@ -2800,7 +2800,7 @@ console.log('✅ Sprachblitz Audio System Ready');
         }
       },
       {
-        id: 3, level: "B2", title: "Sprachblitz B2 – Modellprüfung 01 (Übungsmaterial im Goethe-B2-Format)",
+        id: 3, level: "B2", title: "Sprachblitz B2 Mock Test 01",
 
         hoeren: [
           // Teil 1: kurze Gespräche, Richtig/Falsch + Mehrfachauswahl
@@ -2916,7 +2916,7 @@ console.log('✅ Sprachblitz Audio System Ready');
       
       // ===== C1 MOCK EXAM - COMPREHENSIVE (45+ QUESTIONS) =====
       {
-        id: 4, level: "C1", title: "Sprachblitz C1 – Modellprüfung 01 (Übungsmaterial im Goethe-C1-Format)",
+        id: 4, level: "C1", title: "Sprachblitz C1 Mock Test 01",
         
         hoeren: [
           // TEIL 1: Drei Kurzgespräche (9 Fragen)
@@ -2991,7 +2991,7 @@ console.log('✅ Sprachblitz Audio System Ready');
       
       // ===== C2 MOCK EXAM - COMPREHENSIVE (45+ QUESTIONS) =====
       {
-        id: 5, level: "C2", title: "Sprachblitz C2 – Modellprüfung 01 (Übungsmaterial im Goethe-C2-Format)",
+        id: 5, level: "C2", title: "Sprachblitz C2 Mock Test 01",
         
         hoeren: [
           // TEIL 1-4: 18 Fragen zu Metaethik & Philosophie
@@ -3055,6 +3055,7 @@ console.log('✅ Sprachblitz Audio System Ready');
       activeLevel = lv;
       localStorage.setItem('sb_level', lv);
       openRoomObject = null;
+      activeGrammarIndex = 0; // Reset grammar index when changing levels
       renderActiveTabModule();
     }
     function unitsForLevel(lv) { return curriculumUnits.filter(u => (u.level || 'A1') === lv); }
