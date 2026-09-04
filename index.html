@@ -1,6 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+  <style>
+    /* ============================================================================
+       SPRACHBLITZ LOCK SYSTEM STYLING
+       ============================================================================ */
+    
+    .locked-button {
+      opacity: 0.6 !important;
+      cursor: not-allowed !important;
+      background-color: #e0e0e0 !important;
+      color: #999 !important;
+      border: 2px solid #d0d0d0 !important;
+      pointer-events: none !important;
+    }
+    
+    .locked-button:hover {
+      opacity: 0.6 !important;
+      transform: none !important;
+    }
+    
+    .lock-badge {
+      display: inline-block;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-left: 8px;
+    }
+    
+    .lock-icon {
+      font-size: 16px;
+      margin-right: 4px;
+    }
+    
+    .premium-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: #333;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-left: 8px;
+    }
+    
+    .locked-card {
+      background-color: rgba(200, 200, 200, 0.1);
+      border: 2px dashed #d0d0d0;
+      opacity: 0.7;
+    }
+    
+    .locked-card:hover {
+      background-color: rgba(200, 200, 200, 0.15);
+      border: 2px dashed #c0c0c0;
+    }
+    
+    @media (max-width: 768px) {
+      .lock-badge {
+        font-size: 10px;
+        padding: 4px 8px;
+      }
+    }
+  </style>
+
+
     <link rel="stylesheet" href="lock_system_styles.css">
     <script>
     // ===== AUDIO INITIALIZATION FOR iOS/Android + Fallback =====
@@ -134,6 +201,154 @@ document.addEventListener('click', window.initAudio, { once: false });
 document.addEventListener('touchstart', window.initAudio, { once: false });
 
 console.log('✅ Sprachblitz Audio System Ready');
+
+
+// ============================================================================
+// 🔐 SPRACHBLITZ LOCK SYSTEM - PREMIUM CONTENT PROTECTION
+// ============================================================================
+
+console.log('🔐 Initializing Sprachblitz Lock System...');
+
+// LOCK CONFIGURATION - Define what's locked/free
+const LOCK_CONFIG = {
+  mockTests: {
+    // Mock Test 01
+    'mt-01-a1': { locked: false, level: 'A1', testId: 'mt-01', name: 'Mock Test 01 - A1' },
+    'mt-01-a2': { locked: true,  level: 'A2', testId: 'mt-01', name: 'Mock Test 01 - A2' },
+    'mt-01-b1': { locked: true,  level: 'B1', testId: 'mt-01', name: 'Mock Test 01 - B1' },
+    'mt-01-b2': { locked: true,  level: 'B2', testId: 'mt-01', name: 'Mock Test 01 - B2' },
+    'mt-01-c1': { locked: true,  level: 'C1', testId: 'mt-01', name: 'Mock Test 01 - C1' },
+    'mt-01-c2': { locked: true,  level: 'C2', testId: 'mt-01', name: 'Mock Test 01 - C2' },
+    
+    // Mock Test 02
+    'mt-02-a1': { locked: false, level: 'A1', testId: 'mt-02', name: 'Mock Test 02 - A1' },
+    'mt-02-a2': { locked: true,  level: 'A2', testId: 'mt-02', name: 'Mock Test 02 - A2' },
+    'mt-02-b1': { locked: true,  level: 'B1', testId: 'mt-02', name: 'Mock Test 02 - B1' },
+    'mt-02-b2': { locked: true,  level: 'B2', testId: 'mt-02', name: 'Mock Test 02 - B2' },
+    'mt-02-c1': { locked: true,  level: 'C1', testId: 'mt-02', name: 'Mock Test 02 - C1' },
+    'mt-02-c2': { locked: true,  level: 'C2', testId: 'mt-02', name: 'Mock Test 02 - C2' },
+    
+    // Mock Test 03
+    'mt-03-a1': { locked: false, level: 'A1', testId: 'mt-03', name: 'Mock Test 03 - A1' },
+    'mt-03-a2': { locked: true,  level: 'A2', testId: 'mt-03', name: 'Mock Test 03 - A2' },
+    'mt-03-b1': { locked: true,  level: 'B1', testId: 'mt-03', name: 'Mock Test 03 - B1' },
+    'mt-03-b2': { locked: true,  level: 'B2', testId: 'mt-03', name: 'Mock Test 03 - B2' },
+    'mt-03-c1': { locked: true,  level: 'C1', testId: 'mt-03', name: 'Mock Test 03 - C1' },
+    'mt-03-c2': { locked: true,  level: 'C2', testId: 'mt-03', name: 'Mock Test 03 - C2' },
+  },
+};
+
+// Check if user is premium
+window.isPremiumUser = function() {
+  const premium = localStorage.getItem('sb_premium');
+  const expiryDate = localStorage.getItem('sb_premium_expiry');
+  
+  if (!premium || premium === 'false') return false;
+  
+  if (expiryDate && new Date(expiryDate) < new Date()) {
+    localStorage.setItem('sb_premium', 'false');
+    return false;
+  }
+  
+  return true;
+};
+
+// Check if specific content is locked
+window.isContentLocked = function(contentId) {
+  if (!LOCK_CONFIG.mockTests[contentId]) return false;
+  
+  const config = LOCK_CONFIG.mockTests[contentId];
+  return config.locked && !window.isPremiumUser();
+};
+
+// Handle locked content access
+window.handleLockedContent = function(contentId) {
+  if (window.isContentLocked(contentId)) {
+    console.log('🔒 Locked content accessed:', contentId);
+    window.showLockMessage(contentId);
+    return false;
+  }
+  return true;
+};
+
+// Show lock message modal
+window.showLockMessage = function(contentId) {
+  const config = LOCK_CONFIG.mockTests[contentId] || {};
+  
+  const modal = document.createElement('div');
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+  `;
+  
+  modal.innerHTML = `
+    <div style="
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    ">
+      <div style="font-size: 48px; margin-bottom: 15px;">🔒</div>
+      <h2 style="color: #667eea; margin: 15px 0;">Premium Content</h2>
+      <p style="color: #666; font-size: 16px;">This mock test level requires a Premium subscription.</p>
+      <p style="color: #999; font-size: 14px; margin: 15px 0;">
+        ${config.level} Level - ${config.testId ? config.testId.toUpperCase() : 'Mock Test'}
+      </p>
+      <div style="display: flex; gap: 10px; margin-top: 25px;">
+        <button onclick="this.parentElement.parentElement.parentElement.remove()" style="
+          flex: 1;
+          padding: 12px;
+          background: #f0f0f0;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          font-weight: bold;
+        ">Cancel</button>
+        <button onclick="alert('Upgrade to Premium!'); this.parentElement.parentElement.parentElement.remove();" style="
+          flex: 1;
+          padding: 12px;
+          background: linear-gradient(135deg, #667eea, #764ba2);
+          color: white;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          font-weight: bold;
+        ">Upgrade Now</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Auto-remove after 10 seconds
+  setTimeout(() => {
+    if (modal.parentElement) modal.remove();
+  }, 10000);
+};
+
+// Initialize lock system
+window.initLockSystem = function() {
+  console.log('✅ Lock system initialized');
+  console.log('Premium user:', window.isPremiumUser());
+};
+
+console.log('✅ Sprachblitz Lock System Ready');
+
+// AUTO-INITIALIZE WHEN PAGE LOADS
+document.addEventListener('DOMContentLoaded', function() {
+  window.initLockSystem();
+});
+
 </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
