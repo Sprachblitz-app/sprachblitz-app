@@ -1,0 +1,15 @@
+# Firebase config (if using environment variables)
+.env
+.env.local
+
+# Secrets
+*.key
+*.pem
+secrets.json
+
+# Firebase sensitive files (only if using local testing)
+.env
+.env.local
+firebase-key.json
+
+# But API key in sb-auth.js stays PUBLIC - this is correct

@@ -1,85 +1,84 @@
-# Sprachblitz
+# 🚀 Sprachblitz — Deutsch Lernen A1–B2
 
-**Learn German from A1 to B2 — free, offline, on any device.**
+**Learn German. Work Offline. Stay Secure.**
 
-👉 **[Open the app](https://sprachblitz-app.github.io/sprachblitz-app/)**
+A free, open-source German learning app with complete A1–B2 curriculum, mock exams, and progress syncing.
 
-![Sprachblitz](og-image.png)
+![Sprachblitz](./og-image.png)
 
-Sprachblitz is a German learning app built around Bruno, a bear whose room fills
-with colour as you learn. Every corner of the room is a group of lessons: finish
-them and the object lights up and takes its German name. At A2 the scene moves
-out to the street, at B1 to the town, at B2 to the working district.
+## ✨ Features
+
+- **📚 Complete Curriculum** → 525+ grammar questions, 20+ vocab categories, 4 skill labs
+- **📝 Mock Exams** → Goethe-format tests for A1, A2, B1, B2
+- **📱 Works Offline** → Download once, learn anywhere (no internet needed)
+- **☁️ Progress Syncing** → Save progress across devices with Google or email login
+- **📲 Install as App** → Runs like a native app on iPhone, Android, Windows, Mac
+- **🎮 Gamification** → XP, streaks, and daily goals keep you motivated
+- **🔒 Private & Secure** → No ads, no tracking, no data selling
+
+## 🌐 Try It Now
+
+**Web:** https://sprachblitz-app.github.io/sprachblitz-app/
+
+**Mobile (2 clicks):**
+- **iOS:** Open link → Share → "Add to Home Screen"
+- **Android:** Open link → Menu → "Install app"
+
+## ⏱️ Free Trial
+
+- **10 minutes free** — try before you sign up
+- **Full access** — login with Google or email
+- **No paywall** — all features free forever (beta)
+
+## 🛠️ Tech Stack
+
+- **Frontend:** Vanilla JavaScript, HTML5, Tailwind CSS
+- **Backend:** Firebase (Auth + Firestore)
+- **Offline:** Service Workers + Browser Cache
+- **Audio:** Piper TTS (native German voices)
+- **Hosting:** GitHub Pages
+
+## 🔒 Privacy & Security
+
+We take your privacy seriously:
+
+- ✅ No ads, no tracking, no data selling
+- ✅ Open-source code (view on GitHub)
+- ✅ Secure login with Firebase Authentication
+- ✅ Your data is encrypted
+- ✅ You can export or delete your data anytime
+
+**See:** [SECURITY.md](./SECURITY.md) for technical details.
+
+## 🐛 Report Issues
+
+Found a bug? Have a suggestion?
+
+1. **Open an issue** on GitHub (public bugs)
+2. **Email security issues** to sprachblitz2026@gmail.com (private)
+
+We respond within 48 hours.
+
+## 📜 License
+
+© 2026 Sprachblitz. All rights reserved.
+
+See [LICENSE](./LICENSE) for details.
+
+## 🤝 Contributing
+
+We're open-source but currently in beta. Want to help?
+
+- Report bugs and suggest features
+- Test on different devices
+- Share feedback: [Feedback Form](https://docs.google.com/forms/d/1UF6wX5d7A60ga_jG_rbt0ziNFh5bjF0NyW9siGfomY4/viewform)
+
+## 📞 Contact
+
+- **Email:** sprachblitz2026@gmail.com
+- **GitHub:** https://github.com/Sprachblitz-app/sprachblitz-app
+- **Feedback:** [Google Form](https://docs.google.com/forms/d/1UF6wX5d7A60ga_jG_rbt0ziNFh5bjF0NyW9siGfomY4/viewform)
 
 ---
 
-## What's inside
-
-**Four levels, one path**
-A1 to B2, following the Goethe curriculum: 60+ vocabulary topics, 48 grammar
-points, and a lesson path that unlocks as you go.
-
-**The four exam skills**
-Hören, Lesen, Schreiben and Sprechen, each with graded exercises. Writing is
-checked automatically for content points, register, salutation and common
-grammar slips. Speaking uses the browser's speech recognition where available,
-with a record-and-compare fallback on Safari.
-
-**Mock exams**
-Full practice exams for A1, A2, B1 and B2 in the Goethe format — Hören and Lesen
-auto-graded, Schreiben and Sprechen with model answers to check yourself against.
-
-**Daily Blitz**
-Five mixed questions a day, with a combo bonus, XP levels and achievements.
-
-**Bruno**
-A small daily moment, a journal that unlocks as the room fills, seasons that
-change with the real calendar, and light that follows the time of day.
-
----
-
-## Built with
-
-No framework, no build step. One HTML file, plain JavaScript, Tailwind via CDN.
-
-| Concern | Approach |
-| --- | --- |
-| Offline & install | Service worker + web app manifest (PWA) |
-| Accounts & sync | Firebase Authentication + Firestore |
-| Speech | Web Speech API (synthesis and recognition) |
-| Hosting | GitHub Pages |
-
-## Install it
-
-- **Android / desktop Chrome or Edge** — tap *Install Sprachblitz* in the app,
-  or the install icon in the address bar
-- **iPhone / iPad** — Safari → Share → *Add to Home Screen*
-- **Mac Safari** — File → *Add to Dock*
-
-Once installed it runs offline, including the German audio.
-
-## Your progress
-
-Progress is stored on your device by default. Sign in with Google or an email
-address to sync it across devices. There is also Export / Import in Settings if
-you would rather keep a file and no account.
-
----
-
-## Running it yourself
-
-```bash
-git clone https://github.com/Sprachblitz-app/sprachblitz-app.git
-cd sprachblitz-app
-python3 -m http.server 8000
-```
-
-Then open `http://localhost:8000`. Service workers and sign-in need `localhost`
-or HTTPS — opening `index.html` directly from the file system will not work.
-
-To enable accounts, put your own Firebase keys in `sb-auth.js`.
-
-## Licence
-
-See [License](License). Exam practice material is original content written in
-the Goethe format; it is not affiliated with or endorsed by the Goethe-Institut.
+**Made with ❤️ for German learners. Help us improve — share your feedback!**

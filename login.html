@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sprachblitz - Login</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 400px;
+            padding: 40px;
+        }
+        h1 { color: #333; text-align: center; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #333; font-weight: 600; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        input:focus { outline: none; border-color: #667eea; }
+        button { 
+            width: 100%; 
+            padding: 12px; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            margin-bottom: 10px;
+        }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5568d3; }
+        .btn-google { background: #f5f5f5; color: #333; border: 1px solid #ddd; }
+        .btn-google:hover { background: #e8e8e8; }
+        .btn-anon { background: #27ae60; color: white; }
+        .btn-anon:hover { background: #229954; }
+        .divider { text-align: center; color: #999; margin: 20px 0; }
+        .error { color: #e74c3c; font-size: 12px; margin-top: 5px; }
+        .toggle-link { text-align: center; margin-top: 20px; }
+        .toggle-link a { color: #667eea; cursor: pointer; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🇩🇪 Sprachblitz</h1>
+        <p class="subtitle">Learn German A1 to B2</p>
+
+        <!-- LOGIN FORM -->
+        <div id="loginForm">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="••••••••">
+            </div>
+            <button class="btn-primary" onclick="handleEmailLogin()">Sign In</button>
+            <div id="emailError" class="error"></div>
+
+            <div class="divider">OR</div>
+
+            <button class="btn-google" onclick="handleGoogleLogin()">Sign In with Google</button>
+            <button class="btn-anon" onclick="handleAnonLogin()">Continue Anonymously (10 min trial)</button>
+
+            <div class="toggle-link">
+                New user? <a onclick="toggleForm()">Create Account</a>
+            </div>
+        </div>
+
+        <!-- SIGNUP FORM -->
+        <div id="signupForm" style="display:none;">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="signupEmail" placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="signupPassword" placeholder="••••••••">
+            </div>
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" id="confirmPass" placeholder="••••••••">
+            </div>
+            <button class="btn-primary" onclick="handleEmailSignup()">Create Account</button>
+            <div id="signupError" class="error"></div>
+
+            <div class="toggle-link">
+                Already have account? <a onclick="toggleForm()">Sign In</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Firebase SDK Compat FIRST -->
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-compat.js"></script>
+    <!-- Load sbauth.js as regular script (NOT module) -->
+  <script type="module" src="sb-auth.js"></script>
+
+    <script>
+        // Email Login - uses global sbSignInEmail function
+        function handleEmailLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                document.getElementById('emailError').textContent = 'Please enter email and password';
+                return;
+            }
+            
+            if (typeof window.sbSignInEmail === 'function') {
+                window.sbSignInEmail(email, password);
+                setTimeout(() => {
+                    if (window.sbUser) {
+                        window.location.href = './';
+                    }
+                }, 2000);
+            } else {
+                document.getElementById('emailError').textContent = 'Auth not ready. Refresh the page.';
+            }
+        }
+
+        // Email Signup - uses global sbSignUpEmail function
+        function handleEmailSignup() {
+            const email = document.getElementById('signupEmail').value;
+            const pass = document.getElementById('signupPassword').value;
+            const confirm = document.getElementById('confirmPass').value;
+            
+            if (!email || !pass || !confirm) {
+                document.getElementById('signupError').textContent = 'Please fill in all fields';
+                return;
+            }
+            
+            if (pass.length < 6) {
+                document.getElementById('signupError').textContent = 'Password must be at least 6 characters';
+                return;
+            }
+            
+            if (pass !== confirm) {
+                document.getElementById('signupError').textContent = 'Passwords do not match!';
+                return;
+            }
+            
+            if (typeof window.sbSignUpEmail === 'function') {
+                window.sbSignUpEmail(email, pass);
+                setTimeout(() => {
+                    if (window.sbUser) {
+                        window.location.href = './';
+                    }
+                }, 2000);
+            } else {
+                document.getElementById('signupError').textContent = 'Auth not ready. Refresh the page.';
+            }
+        }
+
+    // Google Login
+async function handleGoogleLogin() {
+    try {
+        const { sbSignInGoogle } = await import('./sb-auth.js');
+        sbSignInGoogle();
+    } catch (error) {
+        console.error('Failed to import:', error);
+        alert('Google sign-in is loading. Please try again.');
+    }
+}
+        
+
+        // Anonymous Login - 10 min trial
+async function handleAnonLogin() {
+    try {
+        const { sbSignInAnonymously } = await import('./sb-auth.js');
+        sbSignInAnonymously();
+    } catch (error) {
+        console.error('Failed to import:', error);
+        alert('Sign-in is loading. Please try again.');
+    }
+}
+        // Toggle between forms
+        function toggleForm() {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            
+            if (loginForm.style.display === 'none') {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+            } else {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+            }
+        }
+
+        // Wait for auth to be ready
+        function waitForAuth() {
+            if (typeof window.sbAuthReady === 'function' && window.sbAuthReady()) {
+                console.log('[login.html] ✅ Auth ready');
+                return;
+            }
+            setTimeout(waitForAuth, 200);
+        }
+        waitForAuth();
+
+        console.log('[login.html] Page loaded, waiting for Firebase...');
+    </script>
+</body>
+</html>
