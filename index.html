@@ -1166,7 +1166,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="font-bold text-xs flex items-center gap-1 px-2 py-1 rounded-lg border border-indigo-800 bg-indigo-950 text-indigo-300">
           ✨ <span id="xp-amount-val">0</span>
         </div>
-        <button onclick="openSettings()" aria-label="Profile and settings"
+        <button data-action="open-settings" aria-label="Profile and settings"
                 class="h-8 w-8 rounded-lg border border-slate-700 bg-slate-800 text-sm flex items-center justify-center">
           <span id="header-avatar">⚙️</span>
         </button>
@@ -1180,11 +1180,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     <!-- Persistent Global Footer Navigation Control Dock Grid Layout -->
     <footer id="app-footer-nav" class="border-t border-slate-800 bg-slate-950 h-16 flex sticky bottom-0 z-30 theme-transition">
-      <button onclick="switchTab('dashboard')" id="tab-dashboard" class="flex-1 flex items-center justify-center tab-active" aria-label="Path"><span class="tab-icon">🏠</span></button>
-      <button onclick="switchTab('vocabulary')" id="tab-vocabulary" class="flex-1 flex items-center justify-center" aria-label="Practice"><span class="tab-icon">📚</span></button>
-      <button onclick="switchTab('grammar')" id="tab-grammar" class="flex-1 flex items-center justify-center" aria-label="Grammar"><span class="tab-icon">🧩</span></button>
-      <button onclick="switchTab('skills')" id="tab-skills" class="flex-1 flex items-center justify-center" aria-label="Skills"><span class="tab-icon">🎧</span></button>
-      <button onclick="switchTab('exams')" id="tab-exams" class="flex-1 flex items-center justify-center" aria-label="Exams"><span class="tab-icon">🏆</span></button>
+      <button data-action="switch-tab" data-tab="dashboard" id="tab-dashboard" class="flex-1 flex items-center justify-center tab-active" aria-label="Path"><span class="tab-icon">🏠</span></button>
+      <button data-action="switch-tab" data-tab="vocabulary" id="tab-vocabulary" class="flex-1 flex items-center justify-center" aria-label="Practice"><span class="tab-icon">📚</span></button>
+      <button data-action="switch-tab" data-tab="grammar" id="tab-grammar" class="flex-1 flex items-center justify-center" aria-label="Grammar"><span class="tab-icon">🧩</span></button>
+      <button data-action="switch-tab" data-tab="skills" id="tab-skills" class="flex-1 flex items-center justify-center" aria-label="Skills"><span class="tab-icon">🎧</span></button>
+      <button data-action="switch-tab" data-tab="exams" id="tab-exams" class="flex-1 flex items-center justify-center" aria-label="Exams"><span class="tab-icon">🏆</span></button>
     </footer>
   </div>
 
@@ -9571,6 +9571,24 @@ speakingStyles.textContent = `
 document.head.appendChild(speakingStyles);
 
 console.log('✅ Sprachblitz Speaking Module loaded with all enhancements!');
-    </script>
+    // Event delegation for data-action attributes
+document.addEventListener('click', function(e) {
+  const action = e.target.dataset.action;
+  if (!action) return;
+
+  if (action === 'open-settings') {
+    openSettings();
+    return;
+  }
+
+  if (action === 'switch-tab') {
+    const tab = e.target.dataset.tab;
+    if (tab) switchTab(tab);
+    return;
+  }
+
+  // Add more actions as needed
+});
+</script>
 </body>
 </html>
